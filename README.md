@@ -2,7 +2,14 @@
 
 #### "A news portal that finds the best news for you"
 
-InterestCloud is a news portal web application that is following MERN stack architectural pattern.
+**InterestCloud** is a **full-stack** news portal web application that is following **MERN stack:**
+
+- MongoDB - document database
+- Express.js - Node.js web framework
+- React.ts - a client-side TypeScript framework
+- Node.js - the premier JavaScript web server
+
+ ... architectural pattern.
 
 ## Available Scripts
 
