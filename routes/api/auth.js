@@ -13,10 +13,13 @@ const User = require("../../model/User");
 // @access Public
 router.post("/", (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
 
+  console.log("qwe");
   // Validation
   if (!email || !password)
     return res.status(400).json({ msg: "Please enter all fields" });
+  console.log("qwe2");
 
   // Check for existing user
   User.findOne({ email }).then((user) => {

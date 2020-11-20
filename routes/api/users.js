@@ -7,6 +7,7 @@ const router = express.Router();
 
 const User = require("../../model/User");
 
+// @route POST api/user
 router.post("/", (req, res) => {
   const { name, email, password } = req.body;
 
@@ -16,7 +17,9 @@ router.post("/", (req, res) => {
 
   // Check for existing user
   User.findOne({ email }).then((user) => {
-    if (user) return res.status(400).json({ msg: "User already exists" });
+    console.log("asdasdas");
+    if (user)
+      return res.status(400).json({ msg: `User: '${email}' already exists` });
     const newUser = new User({
       name,
       email,
