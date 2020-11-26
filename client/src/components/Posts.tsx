@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import store from "../store/store";
 import { getPosts } from "../store/actions/postActions";
 import "./Posts.css";
+import Loading from "./tool/Loading";
 
 interface propTypes {
   posts: any[];
@@ -22,16 +23,22 @@ export class Posts extends Component<propTypes> {
 
   render() {
     return (
-      <Container className="posts-container mb-5">
-        <ListGroup>
-          {this.props.posts.map(({ _id, title, description }) => (
-            <ListGroupItem>
-              <ListGroupItemHeading>{title}</ListGroupItemHeading>
-              <ListGroupItemText>{description}</ListGroupItemText>
-            </ListGroupItem>
-          ))}
-        </ListGroup>
-      </Container>
+      <div>
+        {this.props.posts.length !== 0 ? (
+          <Container className="posts-container mb-5">
+            <ListGroup>
+              {this.props.posts.map(({ _id, title, description }) => (
+                <ListGroupItem>
+                  <ListGroupItemHeading>{title}</ListGroupItemHeading>
+                  <ListGroupItemText>{description}</ListGroupItemText>
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          </Container>
+        ) : (
+          <Loading />
+        )}
+      </div>
     );
   }
 }

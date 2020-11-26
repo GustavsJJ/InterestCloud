@@ -1,4 +1,4 @@
 {
     "mongoURI": "mongodb+srv://GustavsJJ:qweasd123@initialcluster.desnw.mongodb.net/Main?retryWrites=true&w=majority",
-    "jwtSecret": "my_Secret_string"
+    "jwtSecret": "MY!LittlE@SecreT#TokeN$StrinG"
 }
