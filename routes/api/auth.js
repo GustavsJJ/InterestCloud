@@ -13,20 +13,17 @@ const User = require("../../model/User");
 // @access Public
 router.post("/", (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
 
-  console.log("qwe");
   // Validation
   if (!email || !password)
-    return res.status(400).json({ msg: "Please enter all fields" });
-  console.log("qwe2");
+    return res.status(400).json("Please enter all fields");
 
   // Check for existing user
   User.findOne({ email }).then((user) => {
-    if (!user) return res.status(400).json({ msg: "User does not exist" });
+    if (!user) return res.status(400).json("User does not exist");
 
     bcrypt.compare(password, user.password).then((isMatch) => {
-      if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+      if (!isMatch) return res.status(400).json("Invalid credentials");
 
       // jwt - payload, secret, options
       jwt.sign(

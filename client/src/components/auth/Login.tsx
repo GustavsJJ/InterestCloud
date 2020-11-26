@@ -33,7 +33,7 @@ class Login extends Component<propTypes> {
   componentDidUpdate(prevProps: propTypes) {
     const { error, isAuthenticated } = this.props;
     if (error !== prevProps.error) {
-      if (error.id === "LOGIN_FAIL") this.setState({ msg: error.msg.msg });
+      if (error.id === "LOGIN_FAIL") this.setState({ msg: error.msg });
       else this.setState({ msg: null });
     }
 

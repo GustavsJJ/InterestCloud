@@ -9,7 +9,7 @@ interface propTypes {
 class Container extends Component<propTypes> {
   render() {
     return (
-      <div>
+      <div className="mt-3 mb-3">
         {this.props.isAuthenticated ? (
           <h1>You are logged in as {this.props.user.name}</h1>
         ) : (

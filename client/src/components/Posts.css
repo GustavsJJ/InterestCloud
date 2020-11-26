@@ -1,0 +1,9 @@
+.posts-container {
+    color: black;
+    text-align: justify;
+    justify-content: stretch;
+}
+
+.posts-container p{
+    font-size: 1rem;;
+}
