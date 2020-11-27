@@ -10,6 +10,9 @@
 - Node.js - the premier JavaScript web server
 
  ... architectural pattern.
+ 
+  **Deployed version: [http://www.gustavsjj.id.lv](http://www.gustavsjj.id.lv)** \
+ Note: deployed version could be some versions behind main branch version.
 
 ## Available Scripts
 
