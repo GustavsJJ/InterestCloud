@@ -11,8 +11,19 @@
 
  ... architectural pattern.
  
-  **Deployed version: [http://www.gustavsjj.id.lv](http://www.gustavsjj.id.lv)** \
- Note: deployed version could be some versions behind main branch version.
+  **Deployed version: [http://www.gustavsjj.id.lv](http://www.gustavsjj.id.lv)**
+ > Note: deployed version could be some versions behind main branch version.
+ 
+ ## MongoDB and JWT configutarion
+ This repository excludes file ***config/default.json*** which contains two variables - **mongoURI** and **jwtSecret**
+ ```sh
+ {
+    "mongoURI": "mongodb+srv://<username>:<password>@<cluster-name>.desnw.mongodb.net/Main?retryWrites=true&w=majority",
+    "jwtSecret": "<secret-string>"
+ }
+ ```
+ - To use mongoDB services it is required to register on [www.mongodb.com](https://www.mongodb.com/), create a cluster and paste the cluster URI inside ***config/default.json***.
+ - ***jwtSecret*** is a string that is used to sign tokens. This string can be random, e.g., "asdfghjkl12345!", but should not be published outside the project for security reasons.
 
 ## Available Scripts
 
