@@ -2,8 +2,43 @@
     color: black;
     text-align: justify;
     justify-content: stretch;
+    overflow: hidden;
 }
 
-.posts-container p{
-    font-size: 1rem;;
+.posts-container .post {
+    display: block;
+}
+
+.posts-container .media-body {
+    font-size: 1rem;
+}
+
+.posts-container .media-heading a {
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: black;
+}
+
+.posts-container .media-heading a:hover {
+    text-decoration: underline;
+}
+
+.posts-container .media {
+    float: left;
+    margin-right: 1rem;
+}
+
+@media only screen and (max-width: 575px) {
+    .posts-container .media {
+      width: 100%;
+      justify-content: space-evenly;
+      margin-right: 0;
+      margin-bottom: 1rem;
+    }
+}
+
+@media only screen and (max-width: 374px) {
+    .posts-container .post-image {
+        display: none;
+    }
 }
