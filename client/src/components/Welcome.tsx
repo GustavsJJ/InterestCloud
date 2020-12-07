@@ -15,7 +15,7 @@ class Welcome extends Component<propTypes> {
         <h1>
           {time >= 5 && time < 12
             ? "Good morning"
-            : time >= 12 && time < 5
+            : time >= 12 && time < 17
             ? "Good afternoon"
             : "Good evening"}
           {name && `, ${name}`}

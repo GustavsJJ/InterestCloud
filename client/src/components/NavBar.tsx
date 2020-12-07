@@ -11,9 +11,9 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import Register from "./auth/Register";
-import Logout from "./auth/Logout";
 import Login from "./auth/Login";
-import Categories from "./Categories";
+import Categories from "./CategoriesDropdown";
+import UserDropdown from "./UserDropdown";
 
 interface propTypes {
   auth: any;
@@ -42,9 +42,8 @@ class NavBar extends Component<propTypes> {
 
     const member = (
       <>
-        <NavLink href="/user">{user ? user.name : null}</NavLink>
         <NavItem>
-          <Logout />
+          <UserDropdown />
         </NavItem>
       </>
     );

@@ -12,21 +12,14 @@ export const REGISTER_FAIL = "REGISTER_FAIL";
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
 
-// POST ACTIONS
-export const GET_POSTS = "GET_ITEMS";
-export const ADD_POST = "ADD_ITEMS";
-export const DELETE_POST = "DELETE_ITEM";
-export const POSTS_LOADING = "ITEMS_LOADING";
+// POSTS ACTIONS
+export const GET_POSTS = "GET_POSTS";
+export const POSTS_LOADING = "POSTS_LOADING";
 
-// type actionType =
-//   | typeof AUTH_ERROR
-//   | typeof LOGIN_SUCCESS
-//   | typeof LOGOUT_SUCCESS
-//   | typeof REGISTER_SUCCESS
-//   | typeof LOGIN_FAIL
-//   | typeof REGISTER_FAIL
-//   | typeof USER_LOADING
-//   | typeof USER_LOADED;
+export const GET_POST = "GET_POST";
+export const ADD_POST = "ADD_POST";
+export const DELETE_POST = "DELETE_POST";
+export const POST_LOADING = "POST_LOADING";
 
 // export default interface authAction {
 //   type: actionType;

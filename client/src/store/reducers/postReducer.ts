@@ -1,13 +1,17 @@
 import {
   GET_POSTS,
+  POSTS_LOADING,
+  GET_POST,
   ADD_POST,
   DELETE_POST,
-  POSTS_LOADING,
+  POST_LOADING,
 } from "../actions/types";
 
 const initialState = {
   posts: [],
   postsLoading: false,
+  post: {},
+  postLoading: false,
 };
 
 export default function (state = initialState, action: any) {
@@ -17,6 +21,17 @@ export default function (state = initialState, action: any) {
         ...state,
         posts: action.payload,
         postsLoading: false,
+      };
+    case POSTS_LOADING:
+      return {
+        ...state,
+        postsLoading: true,
+      };
+    case GET_POST:
+      return {
+        ...state,
+        post: action.payload,
+        postLoading: false,
       };
     case DELETE_POST:
       return {
@@ -28,11 +43,12 @@ export default function (state = initialState, action: any) {
         ...state,
         posts: [action.payload, ...state.posts],
       };
-    case POSTS_LOADING:
+    case POST_LOADING:
       return {
         ...state,
-        postsLoading: true,
+        postLoading: true,
       };
+
     default:
       return state;
   }

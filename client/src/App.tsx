@@ -10,10 +10,12 @@ import Posts from "./components/Posts";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.css";
-import "./App.css";
+import "./style/App.css";
+import "./style/custom-bootstrap.css";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Category from "./components/Category";
+import PostInfo from "./components/PostInfo";
 
 class App extends Component {
   componentDidMount() {
@@ -50,6 +52,7 @@ class App extends Component {
                     </>
                   )}
                 />
+                <Route exact path="/post/:id" render={() => <PostInfo />} />
                 <Route exact path="/about" render={() => <About />} />
                 <Route
                   exact

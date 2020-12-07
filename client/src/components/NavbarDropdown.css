@@ -1,0 +1,12 @@
+.navbar-dropdown .dropdown-menu {
+    border: none;
+}
+
+.navbar-dropdown .dropdown-menu .dropdown-item:hover {
+    color: black
+}
+
+.navbar-dropdown .dropdown-menu .dropdown-item {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.5);
+}
