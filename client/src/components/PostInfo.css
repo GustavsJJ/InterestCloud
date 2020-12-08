@@ -1,21 +1,8 @@
-.post-container {
-    background-color: #282c34;
-  min-height: calc(100vh - 56px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+
 
 .post-box {
     color: black;
     text-align: justify;
     justify-content: stretch;
     overflow: hidden;
-}
-
-.post-container div {
-    display: block;
 }
