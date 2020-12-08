@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownToggle,
   NavItem,
-  ToastHeader,
 } from "reactstrap";
 import { getCategories } from "../store/actions/categoryActions";
 import store from "../store/store";

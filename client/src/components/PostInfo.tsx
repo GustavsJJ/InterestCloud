@@ -28,7 +28,7 @@ export class PostInfo extends Component<propTypes> {
           </div>
         ) : this.props.post ? (
           <div className="post-box">
-            <Jumbotron>
+            <Jumbotron style={{ backgroundColor: "white" }}>
               <Media className="post">
                 <Media body style={{ fontSize: "1rem" }}>
                   <Media heading>{this.props.post.title}</Media>
@@ -36,16 +36,6 @@ export class PostInfo extends Component<propTypes> {
                 </Media>
               </Media>
             </Jumbotron>
-            {/* <ListGroup style={{ height: "700px" }}>
-              <ListGroupItem>
-                <Media className="post">
-                  <Media body style={{ fontSize: "1rem" }}>
-                    <Media heading>{this.props.post.title}</Media>
-                    {this.props.post.description}
-                  </Media>
-                </Media>
-              </ListGroupItem>
-            </ListGroup> */}
           </div>
         ) : null}
       </Container>
