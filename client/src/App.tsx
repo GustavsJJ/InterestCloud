@@ -9,9 +9,8 @@ import Welcome from "./components/Welcome";
 import Posts from "./components/Posts";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import "bootstrap/dist/css/bootstrap.css";
-import "./style/App.css";
 import "./style/custom-bootstrap.css";
+import "./style/App.css";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Category from "./components/Category";

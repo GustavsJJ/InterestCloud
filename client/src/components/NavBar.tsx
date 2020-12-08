@@ -29,7 +29,7 @@ class NavBar extends Component<propTypes> {
   };
 
   render() {
-    const { isAuthenticated, user } = this.props.auth;
+    const { isAuthenticated } = this.props.auth;
     const leftItems = (
       <>
         <NavLink href="/">Home</NavLink>

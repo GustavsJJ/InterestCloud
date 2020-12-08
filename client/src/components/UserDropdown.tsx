@@ -8,7 +8,6 @@ import {
   NavItem,
 } from "reactstrap";
 import { IAuth } from "../types/interfaces";
-import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import "./NavbarDropdown.css";
 

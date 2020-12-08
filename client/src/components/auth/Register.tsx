@@ -34,7 +34,7 @@ class Register extends Component<propTypes> {
   componentDidUpdate(prevProps: propTypes) {
     const { error, isAuthenticated } = this.props;
     if (error !== prevProps.error) {
-      if (error.id == "REGISTER_FAIL") this.setState({ msg: error.msg });
+      if (error.id === "REGISTER_FAIL") this.setState({ msg: error.msg });
       else this.setState({ msg: null });
     }
 
