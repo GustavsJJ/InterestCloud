@@ -13,10 +13,15 @@
     font-size: 1rem;
 }
 
+.posts-container .media-heading {
+    text-align: start;
+}
+
 .posts-container .media-heading a {
     font-size: 1.5rem;
     text-decoration: none;
     color: black;
+    
 }
 
 .posts-container .media-heading a:hover {

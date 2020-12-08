@@ -6,9 +6,10 @@ import { getPosts } from "../store/actions/postActions";
 import "./Posts.css";
 import Loading from "./tool/Loading";
 import { Link } from "react-router-dom";
+import { IPost } from "../types/interfaces";
 
 interface propTypes {
-  posts: any[];
+  posts: IPost[];
 }
 
 export class Posts extends Component<propTypes> {

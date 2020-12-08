@@ -1,3 +1,4 @@
+import { IAction } from "../../types/interfaces";
 import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
@@ -8,26 +9,6 @@ import {
   USER_LOADING,
   USER_LOADED,
 } from "../actions/types";
-
-type actionType =
-  | typeof AUTH_ERROR
-  | typeof LOGIN_SUCCESS
-  | typeof LOGOUT_SUCCESS
-  | typeof REGISTER_SUCCESS
-  | typeof LOGIN_FAIL
-  | typeof REGISTER_FAIL
-  | typeof USER_LOADING
-  | typeof USER_LOADED;
-
-interface AuthAction {
-  type: actionType;
-  payload: {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    user: any;
-    token: string | null;
-  };
-}
 
 const initialState = {
   token: localStorage.getItem("token"),

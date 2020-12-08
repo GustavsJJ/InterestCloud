@@ -5,7 +5,7 @@ import store from "../store/store";
 import { IPost } from "../types/interfaces";
 import { withRouter } from "react-router";
 import Loading from "./tool/Loading";
-import { ListGroup, ListGroupItem, Media } from "reactstrap";
+import { Container, Jumbotron, Media } from "reactstrap";
 import "./PostInfo.css";
 
 interface propTypes {
@@ -21,26 +21,34 @@ export class PostInfo extends Component<propTypes> {
   }
   render() {
     return (
-      <div className="post-container">
+      <Container className="post-container mt-5">
         {this.props.postLoading ? (
           <div>
             <Loading />
           </div>
         ) : this.props.post ? (
-          <div className="post-box" style={{ justifyContent: "stretch" }}>
-            <ListGroup>
+          <div className="post-box">
+            <Jumbotron>
+              <Media className="post">
+                <Media body style={{ fontSize: "1rem" }}>
+                  <Media heading>{this.props.post.title}</Media>
+                  {this.props.post.description}
+                </Media>
+              </Media>
+            </Jumbotron>
+            {/* <ListGroup style={{ height: "700px" }}>
               <ListGroupItem>
                 <Media className="post">
-                  <Media body style={{ fontSize: "1em" }}>
+                  <Media body style={{ fontSize: "1rem" }}>
                     <Media heading>{this.props.post.title}</Media>
                     {this.props.post.description}
                   </Media>
                 </Media>
               </ListGroupItem>
-            </ListGroup>
+            </ListGroup> */}
           </div>
         ) : null}
-      </div>
+      </Container>
     );
   }
 }

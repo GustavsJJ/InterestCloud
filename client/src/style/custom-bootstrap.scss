@@ -1,5 +1,7 @@
 $theme-colors: (
-  "brown": #503011
+  "brown": #b88655,
+  "yellow": #c39302,
+  "orange": #ff9011
 );
 
-@import "node_modules/bootstrap/scss/bootstrap";
+@import "../../node_modules/bootstrap/scss/bootstrap";

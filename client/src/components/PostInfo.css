@@ -1,8 +1,15 @@
-
+.post-container {
+    align-items: center;
+    justify-content: center;
+}
 
 .post-box {
     color: black;
     text-align: justify;
     justify-content: stretch;
     overflow: hidden;
+}
+
+.post-box .jumbotron {
+    min-height: calc(100vh - 200px);
 }

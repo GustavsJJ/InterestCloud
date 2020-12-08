@@ -1,17 +1,30 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
   NavItem,
+  ToastHeader,
 } from "reactstrap";
+import { getCategories } from "../store/actions/categoryActions";
+import store from "../store/store";
+import { ICategory } from "../types/interfaces";
 import "./NavbarDropdown.css";
 
-export class Categories extends Component {
+interface propTypes {
+  categories: ICategory[];
+}
+
+export class Categories extends Component<propTypes> {
   state = {
     isOpen: false,
   };
+
+  componentDidMount() {
+    store.dispatch(getCategories());
+  }
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
@@ -29,20 +42,22 @@ export class Categories extends Component {
           <DropdownToggle caret nav>
             Category
           </DropdownToggle>
-          <DropdownMenu className="bg-dark" style={{ width: "100%" }}>
-            <DropdownItem href="/category/politics">Politics</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/science">Science</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/business">Business</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/sports">Sports</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/culture">Culture</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/travel">Travel</DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem href="/category/history">History</DropdownItem>
+          <DropdownMenu className="bg-dark py-0" style={{ width: "100%" }}>
+            {this.props.categories.length
+              ? this.props.categories.map((category, i) => (
+                  <Fragment>
+                    <DropdownItem
+                      className="py-2"
+                      href={`/category/${category.name}`}
+                      style={{
+                        borderBottom: `3px solid var(--${category.color})`,
+                      }}
+                    >
+                      {category.name}
+                    </DropdownItem>
+                  </Fragment>
+                ))
+              : null}
           </DropdownMenu>
         </Dropdown>
       </NavItem>
@@ -50,4 +65,8 @@ export class Categories extends Component {
   }
 }
 
-export default Categories;
+const mapStateToProps = (state: any) => ({
+  categories: state.category.categories,
+});
+
+export default connect(mapStateToProps, { getCategories })(Categories);

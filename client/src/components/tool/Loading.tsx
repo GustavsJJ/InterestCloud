@@ -8,6 +8,7 @@ export default function Loading() {
       style={{
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Spinner type="grow" color="info" size="sm" />

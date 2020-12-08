@@ -61,7 +61,7 @@ class NavBar extends Component<propTypes> {
 
     return (
       <div>
-        <Navbar color="dark" dark expand="lg">
+        <Navbar color="dark" dark expand="lg" sticky="top">
           {/* className="mb-5" */}
           <Container>
             <NavbarBrand href="/">

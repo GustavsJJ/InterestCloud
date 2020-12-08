@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 
 import store from "./store/store";
 import { loadUser } from "./store/actions/authActions";

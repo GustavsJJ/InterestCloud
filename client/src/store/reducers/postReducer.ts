@@ -1,3 +1,4 @@
+import { IAction } from "../../types/interfaces";
 import {
   GET_POSTS,
   POSTS_LOADING,
@@ -14,7 +15,7 @@ const initialState = {
   postLoading: false,
 };
 
-export default function (state = initialState, action: any) {
+export default function (state = initialState, action: IAction) {
   switch (action.type) {
     case GET_POSTS:
       return {

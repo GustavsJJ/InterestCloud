@@ -1,13 +1,5 @@
+import { IAction } from "../../types/interfaces";
 import { GET_ERRORS, CLEAR_ERRORS } from "../actions/types";
-
-interface ErrorsAction {
-  type: typeof GET_ERRORS | typeof CLEAR_ERRORS;
-  payload: {
-    msg: string | null | undefined;
-    status: number | null | undefined;
-    id: any;
-  };
-}
 
 const initialState = {
   msg: {},
@@ -15,7 +7,7 @@ const initialState = {
   id: null,
 };
 
-export default function (state = initialState, action: any) {
+export default function (state = initialState, action: IAction) {
   switch (action.type) {
     case GET_ERRORS:
       return {
