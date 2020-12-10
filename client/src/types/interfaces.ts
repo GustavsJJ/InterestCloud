@@ -5,15 +5,15 @@ export enum E_ERROR {
   REGISTER_FAIL = "REGISTER_FAIL",
 }
 
-// export type actionType = actions[]forEach(num => {});
-
 type actionKeys = keyof typeof actions;
 export type actionType = typeof actions[actionKeys];
 
 export interface IUser {
   id: string;
   name: string;
+  surname: string;
   email: string;
+  role: string;
 }
 
 export interface IAuth {
@@ -28,7 +28,6 @@ export interface IPost {
   date: Date;
   title: string;
   description: string;
-  __v: number;
 }
 
 export interface ICategory {

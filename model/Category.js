@@ -7,6 +7,7 @@ const CategorySchema = new Schema({
     trim: true,
     type: String,
     required: true,
+    unique: true,
   },
   color: {
     desc: "Category color",

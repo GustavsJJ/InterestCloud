@@ -1,4 +1,3 @@
-import { IAction } from "../../types/interfaces";
 import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
@@ -14,7 +13,11 @@ const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: false,
   isLoading: false,
-  user: null,
+  user: {
+    name: "",
+    surname: "",
+    role: "",
+  },
 };
 
 export default function (state = initialState, action: any) {
@@ -34,7 +37,9 @@ export default function (state = initialState, action: any) {
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
       const token = action.payload.token ? action.payload.token : "";
+      const userName = action.payload.user.name ? action.payload.user.name : "";
       localStorage.setItem("token", token);
+      localStorage.setItem("userName", userName);
       return {
         ...state,
         ...action.payload,
@@ -46,6 +51,7 @@ export default function (state = initialState, action: any) {
     case LOGOUT_SUCCESS:
     case REGISTER_FAIL:
       localStorage.removeItem("token");
+      localStorage.removeItem("userName");
       return {
         ...state,
         token: null,

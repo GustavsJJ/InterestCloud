@@ -26,6 +26,7 @@ class Register extends Component<propTypes> {
   state = {
     modal: false,
     name: "",
+    surname: "",
     email: "",
     password: "",
     msg: null,
@@ -60,10 +61,11 @@ class Register extends Component<propTypes> {
   onSubmit = (e: any) => {
     e.preventDefault();
 
-    const { name, email, password } = this.state;
+    const { name, surname, email, password } = this.state;
 
     const newUser = {
       name,
+      surname,
       email,
       password,
     };
@@ -91,6 +93,15 @@ class Register extends Component<propTypes> {
                   name="name"
                   id="name"
                   placeholder="Name"
+                  onChange={this.onChange}
+                  style={{ marginBottom: "10px" }}
+                />
+                <Label for="surname">Surname</Label>
+                <Input
+                  type="text"
+                  name="surname"
+                  id="surname"
+                  placeholder="Surname"
                   onChange={this.onChange}
                   style={{ marginBottom: "10px" }}
                 />

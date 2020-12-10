@@ -8,15 +8,17 @@ import {
   NavItem,
   Container,
   NavLink,
+  Button,
 } from "reactstrap";
 import { connect } from "react-redux";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
+import Register from "../auth/Register";
+import Login from "../auth/Login";
 import Categories from "./CategoriesDropdown";
 import UserDropdown from "./UserDropdown";
+import { IAuth } from "../../types/interfaces";
 
 interface propTypes {
-  auth: any;
+  auth: IAuth;
 }
 
 class NavBar extends Component<propTypes> {
@@ -29,7 +31,7 @@ class NavBar extends Component<propTypes> {
   };
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    const { isAuthenticated, isLoading, user } = this.props.auth;
     const leftItems = (
       <>
         <NavLink href="/">Home</NavLink>
@@ -42,6 +44,22 @@ class NavBar extends Component<propTypes> {
 
     const member = (
       <>
+        {(user?.role === "admin" || user?.role === "reporter") && (
+          <NavLink
+            active
+            className="ml-2"
+            style={{ color: "var(--info)" }}
+            href="/newPost"
+          >
+            <b>New Post +</b>
+          </NavLink>
+          // <NavItem>
+          //   <Button href="/newPost" color="info" className="my-2" outline>
+          //     New Post +
+          //   </Button>
+          // </NavItem>
+        )}
+
         <NavItem>
           <UserDropdown />
         </NavItem>
@@ -61,7 +79,7 @@ class NavBar extends Component<propTypes> {
 
     return (
       <div>
-        <Navbar color="dark" dark expand="lg" sticky="top">
+        <Navbar color="dark" dark expand="lg">
           {/* className="mb-5" */}
           <Container>
             <NavbarBrand href="/">
@@ -72,7 +90,9 @@ class NavBar extends Component<propTypes> {
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav navbar>{leftItems}</Nav>
               <Nav className="ml-auto" navbar>
-                {isAuthenticated ? member : unregistered}
+                {isAuthenticated || localStorage.getItem("userName")
+                  ? member
+                  : unregistered}
               </Nav>
             </Collapse>
           </Container>

@@ -9,10 +9,10 @@ const User = require("../../model/User");
 
 // @route POST api/user
 router.post("/", (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, surname, email, password } = req.body;
 
   // Validation
-  if (!name || !email || !password)
+  if (!name || !surname || !email || !password)
     return res.status(400).json("Please enter all fields");
 
   // Check for existing user
@@ -20,6 +20,7 @@ router.post("/", (req, res) => {
     if (user) return res.status(400).json(`User: '${email}' already exists`);
     const newUser = new User({
       name,
+      surname,
       email,
       password,
     });
@@ -41,6 +42,7 @@ router.post("/", (req, res) => {
                 user: {
                   id: user.id,
                   name: user.name,
+                  surname: user.surname,
                   email: user.email,
                   role: user.role,
                 },

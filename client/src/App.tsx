@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import store from "./store/store";
 import { loadUser } from "./store/actions/authActions";
 import { Provider } from "react-redux";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/navbar/NavBar";
 import Welcome from "./components/Welcome";
 import Posts from "./components/Posts";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -14,10 +14,15 @@ import Footer from "./components/Footer";
 import About from "./components/About";
 import Category from "./components/Category";
 import PostInfo from "./components/PostInfo";
+import Profile from "./components/Profile";
+import { getCategories } from "./store/actions/categoryActions";
+import ErrorView from "./components/tool/ErrorView";
 
 class App extends Component {
   componentDidMount() {
+    window.scrollTo(0, 0);
     store.dispatch(loadUser());
+    store.dispatch(getCategories());
   }
 
   render() {
@@ -27,18 +32,6 @@ class App extends Component {
           <div className="App">
             <NavBar />
             <div className="App-container">
-              {/* <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            <a
-              className="App-link mb-3"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a> */}
               <Switch>
                 <Route
                   exact
@@ -50,6 +43,7 @@ class App extends Component {
                     </>
                   )}
                 />
+                <Route exact path="/user" render={() => <Profile />} />
                 <Route exact path="/post/:id" render={() => <PostInfo />} />
                 <Route exact path="/about" render={() => <About />} />
                 <Route
@@ -58,7 +52,7 @@ class App extends Component {
                   render={() => <Category />}
                 />
 
-                <Route render={() => <h1>404 - Page not found</h1>} />
+                <Route render={() => ErrorView("404", "Not Found")} />
               </Switch>
             </div>
             <Footer />

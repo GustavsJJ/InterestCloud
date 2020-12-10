@@ -7,9 +7,8 @@ import {
   DropdownToggle,
   NavItem,
 } from "reactstrap";
-import { getCategories } from "../store/actions/categoryActions";
-import store from "../store/store";
-import { ICategory } from "../types/interfaces";
+import { getCategories } from "../../store/actions/categoryActions";
+import { ICategory } from "../../types/interfaces";
 import "./NavbarDropdown.css";
 
 interface propTypes {
@@ -20,10 +19,6 @@ export class Categories extends Component<propTypes> {
   state = {
     isOpen: false,
   };
-
-  componentDidMount() {
-    store.dispatch(getCategories());
-  }
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });

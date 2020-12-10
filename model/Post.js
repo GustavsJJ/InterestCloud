@@ -9,12 +9,8 @@ const PostSchema = new Schema({
   },
   description: {
     desc: "Post description",
+    trim: true,
     type: String,
-  },
-  authorId: {
-    desc: "Post author id",
-    type: String,
-    required: false,
   },
   date: {
     type: Date,

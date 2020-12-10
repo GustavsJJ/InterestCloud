@@ -7,8 +7,8 @@ import {
   DropdownToggle,
   NavItem,
 } from "reactstrap";
-import { IAuth } from "../types/interfaces";
-import Logout from "./auth/Logout";
+import { IAuth } from "../../types/interfaces";
+import Logout from "../auth/Logout";
 import "./NavbarDropdown.css";
 
 interface propTypes {
@@ -35,7 +35,7 @@ export class UserDropdown extends Component<propTypes> {
           toggle={this.toggle}
         >
           <DropdownToggle caret nav>
-            {user ? user.name : null}
+            {user ? user.name : localStorage.getItem("userName")}
           </DropdownToggle>
           <DropdownMenu className="bg-dark" style={{ width: "100%" }}>
             <DropdownItem href="/user">Profile</DropdownItem>

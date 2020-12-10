@@ -14,6 +14,7 @@ import {
 
 interface registerProps {
   name: string;
+  surname: string;
   email: string;
   password: string;
 }
@@ -45,7 +46,7 @@ export const loadUser = () => (dispatch: Function, getState: Function) => {
 };
 
 // Register user
-export const register = ({ name, email, password }: registerProps) => (
+export const register = ({ name, surname, email, password }: registerProps) => (
   dispatch: Function
 ) => {
   const config = {
@@ -54,7 +55,7 @@ export const register = ({ name, email, password }: registerProps) => (
     },
   };
 
-  const body = JSON.stringify({ name, email, password });
+  const body = JSON.stringify({ name, surname, email, password });
   axios
     .post("api/users", body, config)
     .then((res) =>

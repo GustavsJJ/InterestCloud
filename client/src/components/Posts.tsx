@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, ListGroup, ListGroupItem, Media } from "reactstrap";
+import { Badge, Container, ListGroup, ListGroupItem, Media } from "reactstrap";
 import { connect } from "react-redux";
 import store from "../store/store";
 import { getPosts } from "../store/actions/postActions";
@@ -44,6 +44,23 @@ export class Posts extends Component<propTypes> {
                       {description.length > 1100
                         ? description.substring(0, 1100) + "..."
                         : description}
+
+                      <div
+                        className="d-flex flex-wrap mt-5"
+                        style={{ float: "right", display: "block" }}
+                      >
+                        <h3 className="mr-2">
+                          <Badge color="blue" href="/category/Science">
+                            Science
+                          </Badge>
+                        </h3>
+                        <h3 className="mr-2">
+                          <Badge color="green">Travel</Badge>
+                        </h3>
+                        <h3 className="mr-2">
+                          <Badge color="brown">History</Badge>
+                        </h3>
+                      </div>
                     </Media>
                   </Media>
                 </ListGroupItem>
