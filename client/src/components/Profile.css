@@ -5,3 +5,10 @@
 .profileGeneralInfo div{
     margin-right: 3rem
 }
+
+.interestEditor > div {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill,minmax(120px, 1fr));
+    gap: 5px 5px;
+}

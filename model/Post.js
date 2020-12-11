@@ -13,8 +13,14 @@ const PostSchema = new Schema({
     type: String,
   },
   date: {
+    desc: "Post date",
     type: Date,
     default: Date.now(),
+  },
+  categoryIds: {
+    desc: "Post categories",
+    type: [String],
+    required: true,
   },
 });
 

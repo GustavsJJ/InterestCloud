@@ -1,6 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { Button, Container, Jumbotron, Media, Progress } from "reactstrap";
+import {
+  Button,
+  ButtonGroup,
+  Container,
+  Jumbotron,
+  Media,
+  Progress,
+} from "reactstrap";
 import { IAuth, ICategory } from "../types/interfaces";
 import Loading from "./tool/Loading";
 import "./Profile.css";
@@ -67,12 +74,9 @@ export class Profile extends Component<propTypes> {
                     <hr />
                     <div className="interestEditor mt-3">
                       <h6 className="mr-3">Add interest by 5 points:</h6>
-                      <div className="d-flex flex-wrap">
+                      <div>
                         {this.props.categories.map((category) => (
-                          <Button
-                            className="mt-1 mr-2 mb-1"
-                            color={category.color}
-                          >
+                          <Button color={category.color}>
                             {`${category.name} +5`}
                           </Button>
                         ))}
@@ -81,12 +85,9 @@ export class Profile extends Component<propTypes> {
 
                     <div className="interestEditor mt-3">
                       <h6 className="mr-3">Add interest by 50 points:</h6>
-                      <div className="d-flex flex-wrap">
+                      <div>
                         {this.props.categories.map((category) => (
-                          <Button
-                            className="mt-1 mr-2 mb-1"
-                            color={category.color}
-                          >
+                          <Button color={category.color}>
                             {`${category.name} +50`}
                           </Button>
                         ))}
@@ -94,25 +95,35 @@ export class Profile extends Component<propTypes> {
                     </div>
 
                     <hr />
-                    <Button
-                      color="blue"
-                      style={{ marginTop: "20px" }}
-                      block
-                      outline
-                    >
-                      Edit Profile
-                    </Button>
-                    <Button
-                      color="dark"
-                      style={{ marginTop: "20px" }}
-                      block
-                      outline
-                    >
-                      Reset Interest
-                    </Button>
-                    <Button color="danger" style={{ marginTop: "20px" }} block>
-                      Delete Profile
-                    </Button>
+                    <div
+                      className="filler"
+                      style={{ minHeight: "calc(100vh - 56rem)" }}
+                    ></div>
+                    <div className="bottomButtons">
+                      <Button
+                        color="blue"
+                        style={{ marginTop: "20px" }}
+                        block
+                        outline
+                      >
+                        Edit Profile
+                      </Button>
+                      <Button
+                        color="dark"
+                        style={{ marginTop: "20px" }}
+                        block
+                        outline
+                      >
+                        Reset Interest
+                      </Button>
+                      <Button
+                        color="danger"
+                        style={{ marginTop: "20px" }}
+                        block
+                      >
+                        Delete Profile
+                      </Button>
+                    </div>
                   </div>
                 </Media>
               </Media>
