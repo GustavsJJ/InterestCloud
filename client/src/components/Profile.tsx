@@ -1,13 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import {
-  Button,
-  ButtonGroup,
-  Container,
-  Jumbotron,
-  Media,
-  Progress,
-} from "reactstrap";
+import { Button, Container, Jumbotron, Media, Progress } from "reactstrap";
 import { IAuth, ICategory } from "../types/interfaces";
 import Loading from "./tool/Loading";
 import "./Profile.css";
