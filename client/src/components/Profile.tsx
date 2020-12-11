@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Button, Container, Jumbotron, Media, Progress } from "reactstrap";
 import { IAuth, ICategory } from "../types/interfaces";
