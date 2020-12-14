@@ -17,10 +17,18 @@ const PostSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  categoryIds: {
-    desc: "Post categories",
-    type: [String],
-    required: true,
+  categoryIds: [
+    {
+      desc: "Post categories",
+      type: Schema.Types.ObjectId,
+      ref: "category",
+    },
+  ],
+  image: {
+    desc: "ImageId",
+    type: Schema.Types.ObjectId,
+    ref: "images.files",
+    required: false,
   },
 });
 

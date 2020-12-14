@@ -5,12 +5,14 @@ const CommentSchema = new Schema({
   postId: {
     desc: "Post Id",
     trim: true,
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "post",
   },
   authorId: {
     desc: "Author Id",
     trim: true,
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
   text: {
     desc: "Comment description",

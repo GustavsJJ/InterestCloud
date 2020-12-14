@@ -28,6 +28,8 @@ export interface IPost {
   date: Date;
   title: string;
   description: string;
+  categories: String[];
+  image: string;
 }
 
 export interface ICategory {
@@ -36,6 +38,15 @@ export interface ICategory {
   color: string;
   position?: number;
 }
+
+export interface IImage {
+  _id: string;
+  length: Number;
+  chunkSize: Number;
+  uploadDate: Date;
+}
+
+//
 
 export interface IAction {
   type: actionType;

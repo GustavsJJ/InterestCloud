@@ -13,6 +13,7 @@ const initialState = {
   postsLoading: false,
   post: {},
   postLoading: false,
+  imageFilename: "",
 };
 
 export default function (state = initialState, action: IAction) {

@@ -17,6 +17,7 @@ import PostInfo from "./components/PostInfo";
 import Profile from "./components/Profile";
 import { getCategories } from "./store/actions/categoryActions";
 import ErrorView from "./components/tool/ErrorView";
+import NewPost from "./components/NewPost";
 
 class App extends Component {
   componentDidMount() {
@@ -51,6 +52,7 @@ class App extends Component {
                   path="/category/:cat"
                   render={() => <Category />}
                 />
+                <Route exact path="/newPost" render={() => <NewPost />} />
 
                 <Route render={() => ErrorView("404", "Not Found")} />
               </Switch>

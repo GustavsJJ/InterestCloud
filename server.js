@@ -10,7 +10,6 @@ const port = process.env.PORT || 5000;
 app.use(express.json()); // body parsing
 
 // Routes
-// app.use("/api/items", require("./routes/api/items"));
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/posts", require("./routes/api/posts"));
@@ -24,7 +23,13 @@ mongoose
     useUnifiedTopology: true,
     useCreateIndex: true,
   })
-  .then(() => console.log("Connection to MongoDB established..."))
+  .then(() => {
+    module.exports = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "images",
+    });
+    app.use("/api/images", require("./routes/api/images"));
+    console.log("Connection to MongoDB established...");
+  })
   .catch((error) => console.log(error));
 
 // Production
