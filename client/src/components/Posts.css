@@ -33,19 +33,32 @@
     justify-content: space-between;
 }
 
+.posts-container .categories-floater .categories > h3 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
 
+
+@media only screen and (max-width: 767px) {
+    .posts-container .media {
+        width: 100%;
+        justify-content: space-evenly;
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+  
+      .posts-container .categories-floater {
+          justify-content: unset;
+      }
+      
+    .posts-container .categories-floater .categories > h3 {
+        margin-right: 0.5rem;
+        margin-left: 0;
+    } 
+}
 
 @media only screen and (max-width: 575px) {
-    .posts-container .media {
-      width: 100%;
-      justify-content: space-evenly;
-      margin-right: 0;
-      margin-bottom: 1rem;
-    }
 
-    .posts-container .categories-floater {
-        justify-content: unset;
-    }
 }
 
 @media only screen and (max-width: 374px) {

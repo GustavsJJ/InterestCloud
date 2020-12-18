@@ -43,15 +43,6 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-// // Production
-// if (process.env.NODE_ENV === "production") {
-//   // Static folder
-//   app.use(express.static("client/build"));
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-//   });
-// }
-
 // Server listening port
 app.listen(port, () => {
   console.log(`Server started on port: ${port}`);

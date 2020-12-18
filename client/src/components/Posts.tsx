@@ -86,6 +86,7 @@ export class Posts extends Component<propTypes> {
                       >
                         <div />
                         <div
+                          className="categories"
                           style={{
                             display: "flex",
                             flex: "wrap",
