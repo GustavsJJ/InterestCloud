@@ -39,7 +39,7 @@ export class Posts extends Component<propTypes> {
                 <ListGroupItem>
                   <h2>No post found</h2>
                 </ListGroupItem>
-              ) : (
+              ) : this.props.post.posts.length ? (
                 this.props.post.posts.map(
                   ({ _id, title, description, categoryIds, imageId }, i) => (
                     <ListGroupItem>
@@ -115,7 +115,7 @@ export class Posts extends Component<propTypes> {
                     </ListGroupItem>
                   )
                 )
-              )}
+              ) : null}
             </ListGroup>
           </Container>
         ) : (
