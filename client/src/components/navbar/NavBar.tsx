@@ -8,7 +8,6 @@ import {
   NavItem,
   Container,
   NavLink,
-  Button,
 } from "reactstrap";
 import { connect } from "react-redux";
 import Register from "../auth/Register";
@@ -16,6 +15,7 @@ import Login from "../auth/Login";
 import Categories from "./CategoriesDropdown";
 import UserDropdown from "./UserDropdown";
 import { IAuth } from "../../types/interfaces";
+import "./NavBar.css";
 
 interface propTypes {
   auth: IAuth;
@@ -47,17 +47,12 @@ class NavBar extends Component<propTypes> {
         {(user?.role === "admin" || user?.role === "reporter") && (
           <NavLink
             active
-            className="ml-2"
+            className="ml-2 newPost-button"
             style={{ color: "var(--info)" }}
             href="/newPost"
           >
             <b>New Post +</b>
           </NavLink>
-          // <NavItem>
-          //   <Button href="/newPost" color="info" className="my-2" outline>
-          //     New Post +
-          //   </Button>
-          // </NavItem>
         )}
 
         <NavItem>

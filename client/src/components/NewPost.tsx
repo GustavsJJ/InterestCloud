@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
+  Alert,
   Button,
   Container,
   Form,
@@ -11,74 +11,138 @@ import {
   Jumbotron,
   Label,
   Media,
+  Spinner,
 } from "reactstrap";
 import { IAuth, ICategory } from "../types/interfaces";
 import ErrorView from "./tool/ErrorView";
 import Loading from "./tool/Loading";
+import { createPost } from "../store/actions/postActions";
 
 interface propTypes {
   auth: IAuth;
   categories: ICategory[];
+  createPost: Function;
+}
+
+interface stateTypes {
+  alertVisibility: false;
+  alertColor: string;
+  alertMsg: string;
+  title: string;
+  text: string;
+  imageId: string;
+  categories: {
+    [key: string]: any;
+  };
+  file: File;
+  isLoading: boolean;
 }
 
 export class NewPost extends Component<propTypes> {
-  state = {
+  state: Readonly<stateTypes> = {
+    alertVisibility: false,
+    alertColor: "",
+    alertMsg: "",
     title: "",
     text: "",
     imageId: "",
+    categories: {},
+    file: new File([""], ""),
+    isLoading: false,
   };
 
   constructor(props: propTypes) {
     super(props);
+    this.onSubmit = this.onSubmit.bind(this);
     this.onImageChange = this.onImageChange.bind(this);
     this.onChange = this.onChange.bind(this);
-    // this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeCategory = this.onChangeCategory.bind(this);
+  }
+
+  componentDidUpdate(prevProps: propTypes) {
+    if (prevProps.categories !== this.props.categories) {
+      if (this.props.categories.length) {
+        const categories: any = {};
+        this.props.categories.map(
+          (category) => (categories[category._id] = false)
+        );
+        this.setState({ categories });
+      }
+    }
   }
 
   onSubmit = (e: any) => {
     e.preventDefault();
+    if (!this.state.isLoading) {
+      const { title, text, imageId, file } = this.state;
+      const allCategories = this.state.categories;
+      const categories = Object.keys(allCategories).filter(
+        (key) => allCategories[key] === true
+      );
+      const newPost = {
+        title,
+        text,
+        imageId,
+        categories,
+        file,
+      };
+      this.props.createPost(newPost, this.onSubmitError, this.onSubmitSuccess);
+      this.setState({ isLoading: true });
+    }
   };
 
-  uploadImage(file: any) {
-    const formData = new FormData();
-    formData.append("image", file);
+  onSubmitSuccess = (msg: string) => {
+    this.setState({
+      alertColor: "success",
+      alertVisibility: true,
+      alertMsg: msg,
+      title: "",
+      text: "",
+      imageId: "",
+      categories: {},
+      file: new File([""], ""),
+      isLoading: false,
+    });
+    (document.getElementById("post-image-upload") as HTMLInputElement).value =
+      "";
+  };
 
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    axios
-      .post("/api/images", formData, config)
-      .then((res) => {
-        alert("The file is successfully uploaded");
-        this.setState({ imageId: res.data.file.id });
-      })
-      .catch((error) => {});
-  }
-
-  deleteImage(id: String) {
-    axios
-      .delete(`/api/images/${id}`)
-      .then((res) => alert("The file is successfully deleted"))
-      .catch((err) => alert(err));
-  }
+  onSubmitError = (err: string) => {
+    this.setState({
+      alertColor: "danger",
+      alertVisibility: true,
+      alertMsg: err,
+      isLoading: false,
+    });
+  };
 
   onImageChange(e: any) {
-    if (!this.state.imageId) this.uploadImage(e.target.files[0]);
-    else {
-      this.deleteImage(this.state.imageId);
-      this.uploadImage(e.target.files[0]);
-    }
+    const file = new File([e.target.files[0]], e.target.files[0].name, {
+      type: e.target.files[0].type,
+    });
+    this.setState({ file });
   }
 
   onChange(e: any) {
-    console.log(e);
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  onChangeCategory(e: any) {
+    this.setState({
+      categories: {
+        ...this.state.categories,
+        [e.target.name]: e.target.checked,
+      },
+    });
+  }
+
+  onCloseAlert = () => {
+    this.setState({ alertVisibility: false });
+  };
+
   render() {
     const { user, isAuthenticated, isLoading } = this.props.auth;
+
     return (
       <Container className="post-container mt-5">
         {!isLoading && !isAuthenticated ? (
@@ -86,15 +150,25 @@ export class NewPost extends Component<propTypes> {
         ) : this.props.auth.isLoading ? (
           <Loading />
         ) : (
-          <div className="post-box">
+          <div>
             <Jumbotron style={{ backgroundColor: "white" }}>
               <Media className="post">
                 <Media body style={{ fontSize: "1rem" }}>
-                  <Media heading>New Post</Media>
+                  <Media className="d-flex" heading>
+                    New Post
+                  </Media>
                   <hr />
                   <Form name="image" encType="multipart/form-data">
+                    <Alert
+                      color={this.state.alertColor}
+                      isOpen={this.state.alertVisibility}
+                      toggle={this.onCloseAlert}
+                    >
+                      {this.state.alertMsg}
+                    </Alert>
                     <Label for="exampleFile">Image</Label>
                     <Input
+                      id="post-image-upload"
                       type="file"
                       accept="image/*"
                       onChange={this.onImageChange}
@@ -106,39 +180,52 @@ export class NewPost extends Component<propTypes> {
                     </FormText>
                   </Form>
                   <Form onSubmit={this.onSubmit}>
-                    <Label for="exampleFile">Title</Label>
+                    <Label className="mt-1">Title</Label>
                     <Input
                       name="title"
                       value={this.state.title}
                       type="text"
                       onChange={this.onChange}
                     />
-                    <Label for="exampleFile">Text</Label>
+                    <Label className="mt-1">Text</Label>
                     <Input
+                      style={{
+                        minHeight: "150px",
+                        justifyContent: "flex-start",
+                        wordBreak: "break-word",
+                      }}
                       name="text"
                       value={this.state.text}
-                      type="text"
+                      type="textarea"
                       onChange={this.onChange}
                     />
-
-                    <FormGroup className="mt-2" check>
-                      <Label check>
-                        <Input
-                          name="category"
-                          type="checkbox"
-                          onChange={this.onChange}
-                        />{" "}
-                        Check me out
-                      </Label>
-                      <Label check>
-                        <Input
-                          name="asd"
-                          type="checkbox"
-                          onChange={this.onChange}
-                        />{" "}
-                        asd
-                      </Label>
+                    <Label className="mt-1">Categories</Label>
+                    <FormGroup className="mb-0 pl-1">
+                      {this.props.categories.map((category) => (
+                        <Label className="mx-3 mb-0">
+                          <Input
+                            checked={this.state.categories[category._id]}
+                            name={category._id}
+                            type="checkbox"
+                            onChange={(e: any) => this.onChangeCategory(e)}
+                          />
+                          {category.name}
+                        </Label>
+                      ))}
                     </FormGroup>
+                    <FormText color="muted">
+                      Post must have one to three categories.
+                    </FormText>
+                    <div
+                      className="mt-3"
+                      style={{
+                        textAlign: "center",
+                        alignItems: "center",
+                        visibility: this.state.isLoading ? "visible" : "hidden",
+                      }}
+                    >
+                      <Spinner />
+                    </div>
                     <Button
                       type="submit"
                       className="mt-3"
@@ -164,4 +251,4 @@ const mapStateToProps = (state: any) => ({
   categories: state.category.categories,
 });
 
-export default connect(mapStateToProps, {})(NewPost);
+export default connect(mapStateToProps, { createPost })(NewPost);

@@ -105,7 +105,7 @@ export const getHeaderConfig = (state: any) => {
   const token = state.auth.token;
   const config: AxiosRequestConfig = {
     headers: {
-      "Content-type": "appliaction/json",
+      "Content-type": "application/json",
     },
   };
   if (token) config.headers["x-auth-token"] = token;

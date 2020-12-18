@@ -22,13 +22,19 @@ const PostSchema = new Schema({
       desc: "Post categories",
       type: Schema.Types.ObjectId,
       ref: "category",
+      required: true,
     },
   ],
-  image: {
+  imageId: {
     desc: "ImageId",
     type: Schema.Types.ObjectId,
     ref: "images.files",
     required: false,
+  },
+  author: {
+    desc: "Author",
+    trim: true,
+    type: String,
   },
 });
 

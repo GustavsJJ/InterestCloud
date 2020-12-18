@@ -21,7 +21,7 @@ export class Profile extends Component<propTypes> {
         ) : this.props.auth.isLoading ? (
           <Loading />
         ) : (
-          <div className="post-box">
+          <div>
             <Jumbotron style={{ backgroundColor: "white" }}>
               <Media className="post">
                 <Media body style={{ fontSize: "1rem" }}>

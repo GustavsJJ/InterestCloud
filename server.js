@@ -12,7 +12,7 @@ app.use(express.json()); // body parsing
 // Routes
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/posts", require("./routes/api/posts"));
+
 app.use("/api/categories", require("./routes/api/categories"));
 
 const connectionString = config.get("mongoURI");
@@ -28,6 +28,8 @@ mongoose
       bucketName: "images",
     });
     app.use("/api/images", require("./routes/api/images"));
+    app.use("/api/posts", require("./routes/api/posts"));
+
     console.log("Connection to MongoDB established...");
   })
   .catch((error) => console.log(error));

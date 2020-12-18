@@ -5,9 +5,6 @@ export enum E_ERROR {
   REGISTER_FAIL = "REGISTER_FAIL",
 }
 
-type actionKeys = keyof typeof actions;
-export type actionType = typeof actions[actionKeys];
-
 export interface IUser {
   id: string;
   name: string;
@@ -28,25 +25,28 @@ export interface IPost {
   date: Date;
   title: string;
   description: string;
-  categories: String[];
-  image: string;
+  categoryIds: string[];
+  imageId: string;
+  author: string;
 }
 
 export interface ICategory {
   _id: string;
   name: string;
   color: string;
-  position?: number;
 }
 
 export interface IImage {
   _id: string;
-  length: Number;
-  chunkSize: Number;
+  length: number;
+  chunkSize: number;
   uploadDate: Date;
 }
 
-//
+// Store/Actions/Reducers
+
+type actionKeys = keyof typeof actions;
+export type actionType = typeof actions[actionKeys];
 
 export interface IAction {
   type: actionType;
