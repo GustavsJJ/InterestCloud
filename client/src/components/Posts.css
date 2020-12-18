@@ -64,6 +64,11 @@
 }
 
 @media only screen and (max-width: 374px) {
+    .posts-container .post {
+        padding-top: 10px;
+        margin: 0;
+      }
+
     .posts-container .post-image {
         display: none;
     }
