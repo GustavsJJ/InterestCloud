@@ -57,7 +57,7 @@ export class Posts extends Component<propTypes> {
                             )}
                           </Link>
                         </Media>
-                        <Media body>
+                        <Media body className="post-media-body">
                           <Media heading>
                             <Link to={`/post/${_id}`}>{title}</Link>
                           </Media>
@@ -78,7 +78,7 @@ export class Posts extends Component<propTypes> {
                       </Media>
 
                       <div
-                        className="categories-floater"
+                        className="categories-floater pt-3 pr-3"
                         style={{
                           clear: "both",
                           display: "flex",

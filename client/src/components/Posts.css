@@ -7,9 +7,11 @@
 
 .posts-container .post {
     display: block;
+    max-height: 300px;
+    overflow: hidden;
 }
 
-.posts-container .media-body {
+.posts-container .post-media-body {
     font-size: 1rem;
 }
 
@@ -45,6 +47,10 @@
         justify-content: space-evenly;
         margin-right: 0;
         margin-bottom: 1rem;
+      }
+
+      .posts-container .post {
+        max-height: 500px;
       }
   
       .posts-container .categories-floater {
