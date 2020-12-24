@@ -13,8 +13,14 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", [reporter, upload.single("image")], (req, res) => {
-  res.json({ file: req.file });
+router.post("/", [reporter, upload], (req, res) => {
+  try {
+    if (req.file) {
+      return res.json({ file: req.file });
+    } else return res.status(400).json("Please provide an image");
+  } catch (err) {
+    res.status(400).json("Unable to upload an image");
+  }
 });
 
 router.delete("/:id", (req, res) => {

@@ -10,7 +10,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import "./style/custom-bootstrap.css";
 import "./style/App.css";
-import Footer from "./components/Footer";
+import Footer from "./components/tool/Footer";
 import About from "./components/About";
 import Category from "./components/Category";
 import PostInfo from "./components/PostInfo";
@@ -53,6 +53,18 @@ class App extends Component {
                   render={() => <Category />}
                 />
                 <Route exact path="/newPost" render={() => <NewPost />} />
+                <Route
+                  exact
+                  path="/user/history"
+                  render={() => (
+                    <>
+                      <div className="my-5">
+                        <h1>Last viewed:</h1>
+                      </div>
+                      <Posts sortBy="user-viewedHistory" />
+                    </>
+                  )}
+                />
 
                 <Route render={() => ErrorView("404", "Not Found")} />
               </Switch>

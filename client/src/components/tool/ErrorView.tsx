@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * Creates Error View
+ * @param firstLine String for first line of the error view
+ * @param secoundLine String for secound line of the error view
+ * @param description String for further description of the error
+ */
 export default function ErrorView(
   firstLine: string,
   secoundLine?: string,

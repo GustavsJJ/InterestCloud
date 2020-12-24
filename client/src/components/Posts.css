@@ -12,6 +12,7 @@
 }
 
 .posts-container .post-media-body {
+    overflow: auto;
     font-size: 1rem;
 }
 
@@ -26,13 +27,20 @@
     text-decoration: underline;
 }
 
-.posts-container .media {
+.posts-container .image-box {
     float: left;
     margin-right: 1rem;
 }
 
 .posts-container .categories-floater {
+    clear: both;
+    display: flex;
     justify-content: space-between;
+}
+
+.posts-container .categories-floater .categories {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .posts-container .categories-floater .categories > h3 {
@@ -42,20 +50,24 @@
 
 
 @media only screen and (max-width: 767px) {
-    .posts-container .media {
+    .posts-container .image-box {
         width: 100%;
         justify-content: space-evenly;
         margin-right: 0;
         margin-bottom: 1rem;
-      }
+    }
 
-      .posts-container .post {
+    .posts-container .post-media-body {
+        overflow: unset;
+    }
+
+    .posts-container .post {
         max-height: 500px;
-      }
-  
-      .posts-container .categories-floater {
-          justify-content: unset;
-      }
+    }
+
+    .posts-container .categories-floater {
+        justify-content: unset;
+    }
 
     .posts-container .categories-floater .categories > h3 {
         margin-right: 0.5rem;

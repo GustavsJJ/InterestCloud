@@ -3,32 +3,32 @@ const mongoose = require("mongoose");
 const config = require("config");
 const path = require("path");
 
-const app = express();
-const port = process.env.PORT || 5000;
+const app = express(); // launch express application
+const port = process.env.PORT || 5000; // backend port
 
 // Middeware
-app.use(express.json()); // body parsing
+app.use(express.json()); // body parser
 
-// Routes
-app.use("/api/users", require("./routes/api/users"));
-app.use("/api/auth", require("./routes/api/auth"));
-
-app.use("/api/categories", require("./routes/api/categories"));
-
-const connectionString = config.get("mongoURI");
 // MongoDB connection
+const connectionString = config.get("mongoURI");
 mongoose
   .connect(connectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: true,
   })
   .then(() => {
     module.exports = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
       bucketName: "images",
-    });
+    }); // exports gridfs bucket for file upload
+
+    // Routes
     app.use("/api/images", require("./routes/api/images"));
     app.use("/api/posts", require("./routes/api/posts"));
+    app.use("/api/users", require("./routes/api/users"));
+    app.use("/api/auth", require("./routes/api/auth"));
+    app.use("/api/categories", require("./routes/api/categories"));
 
     console.log("Connection to MongoDB established...");
 

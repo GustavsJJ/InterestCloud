@@ -1,5 +1,8 @@
 import React from "react";
 
+/**
+ * Creates Footer component
+ */
 function Footer() {
   return (
     <footer className="App-footer bg-dark">

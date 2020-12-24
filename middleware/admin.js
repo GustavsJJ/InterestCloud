@@ -2,6 +2,7 @@ const config = require("config");
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 
+// Checks if user is admin
 function admin(req, res, next) {
   const token = req.header("x-auth-token");
 

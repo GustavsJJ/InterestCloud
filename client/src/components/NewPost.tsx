@@ -117,10 +117,14 @@ export class NewPost extends Component<propTypes> {
   };
 
   onImageChange(e: any) {
-    const file = new File([e.target.files[0]], e.target.files[0].name, {
-      type: e.target.files[0].type,
-    });
-    this.setState({ file });
+    if (e.target.files.length) {
+      const file = new File([e.target.files[0]], e.target.files[0].name, {
+        type: e.target.files[0].type,
+      });
+      this.setState({ file });
+    } else {
+      this.setState({ file: undefined });
+    }
   }
 
   onChange(e: any) {
@@ -170,13 +174,16 @@ export class NewPost extends Component<propTypes> {
                     <Input
                       id="post-image-upload"
                       type="file"
-                      accept="image/*"
+                      // accept="image/*"
                       onChange={this.onImageChange}
                     />
-                    <FormText color="muted">
-                      This is some placeholder block-level help text for the
-                      above input. It's a bit lighter and easily wraps to a new
-                      line.
+                    <FormText
+                      color="muted"
+                      style={{ whiteSpace: "break-spaces" }}
+                    >
+                      {
+                        'File should be 1MB ".jpeg" or ".png" image file\nRecomended size: 300x300 px'
+                      }
                     </FormText>
                   </Form>
                   <Form onSubmit={this.onSubmit}>
@@ -190,7 +197,7 @@ export class NewPost extends Component<propTypes> {
                     <Label className="mt-1">Text</Label>
                     <Input
                       style={{
-                        minHeight: "150px",
+                        minHeight: "135px",
                         justifyContent: "flex-start",
                         wordBreak: "break-word",
                       }}

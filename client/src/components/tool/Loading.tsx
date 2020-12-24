@@ -1,6 +1,9 @@
 import React from "react";
 import { Spinner } from "reactstrap";
 
+/**
+ * Creates loading component with three cyan dots
+ */
 export default function Loading() {
   return (
     <div

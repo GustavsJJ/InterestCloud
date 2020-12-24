@@ -28,6 +28,7 @@ export interface IPost {
   categoryIds: string[];
   imageId: string;
   author: string;
+  liked?: boolean;
 }
 
 export interface ICategory {

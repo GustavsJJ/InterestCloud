@@ -6,6 +6,7 @@ import {
   ADD_POST,
   DELETE_POST,
   POST_LOADING,
+  LIKE_POST,
 } from "./types";
 import { returnErrors } from "./errorActions";
 import { getHeaderConfig } from "./authActions";
@@ -18,22 +19,41 @@ interface createPostProps {
   file: any;
 }
 
-export const getPosts = () => (dispatch: Function) => {
+export const getPosts = (sortBy?: string) => (
+  dispatch: Function,
+  getState: Function
+) => {
   dispatch({ type: POSTS_LOADING });
-  axios
-    .get("/api/posts")
-    .then((res) => {
-      dispatch({ type: GET_POSTS, payload: res.data });
-    })
-    .catch((err: any) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
-    });
+  if (!sortBy) {
+    axios
+      .get("/api/posts")
+      .then((res) => {
+        dispatch({ type: GET_POSTS, payload: res.data });
+      })
+      .catch((err: any) => {
+        dispatch(returnErrors(err.response.data, err.response.status));
+      });
+  } else {
+    const config = getHeaderConfig(getState());
+    axios
+      .get(`/api/posts/sortBy=${sortBy}`, config)
+      .then((res) => {
+        dispatch({ type: GET_POSTS, payload: res.data });
+      })
+      .catch((err: any) => {
+        dispatch(returnErrors(err.response.msg, err.response.status));
+      });
+  }
 };
 
-export const getPostById = (id: string) => (dispatch: Function) => {
+export const getPostById = (id: string) => (
+  dispatch: Function,
+  getState: Function
+) => {
+  const config = getHeaderConfig(getState());
   dispatch({ type: POST_LOADING });
   axios
-    .get("/api/posts/" + id)
+    .get("/api/posts/" + id, config)
     .then((res) => {
       dispatch({ type: GET_POST, payload: res.data });
     })
@@ -86,5 +106,20 @@ export const createPost = (
     })
     .catch((err) => {
       onError(err.response.data);
+    });
+};
+
+export const likePost = (id: string) => (
+  dispatch: Function,
+  getState: Function
+) => {
+  const config = getHeaderConfig(getState());
+  axios
+    .get(`/api/posts/${id}/like`, config)
+    .then((res) => {
+      dispatch({ type: LIKE_POST });
+    })
+    .catch((err) => {
+      console.error(err);
     });
 };

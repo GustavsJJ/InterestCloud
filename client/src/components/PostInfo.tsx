@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getPostById } from "../store/actions/postActions";
+import { getPostById, likePost } from "../store/actions/postActions";
 import store from "../store/store";
-import { IPost } from "../types/interfaces";
+import { IAuth, ICategory, IPost } from "../types/interfaces";
 import { withRouter } from "react-router";
 import Loading from "./tool/Loading";
 import {
+  Badge,
+  Button,
   Container,
   Jumbotron,
   ListGroup,
@@ -15,8 +17,10 @@ import {
 import "./PostInfo.css";
 
 interface propTypes {
+  auth: IAuth;
   post: IPost;
   postLoading: boolean;
+  categories: ICategory[];
   match: any;
 }
 
@@ -25,6 +29,11 @@ export class PostInfo extends Component<propTypes> {
     const id = this.props.match.params.id;
     store.dispatch(getPostById(id));
   }
+
+  onLike = () => {
+    store.dispatch(likePost(this.props.post._id));
+  };
+
   render() {
     const {
       title,
@@ -33,6 +42,7 @@ export class PostInfo extends Component<propTypes> {
       author,
       date,
       categoryIds,
+      liked,
     } = this.props.post;
     const dateInstance = new Date(date);
     const formattedDate = `${dateInstance.getDate()}.${
@@ -49,15 +59,13 @@ export class PostInfo extends Component<propTypes> {
             <div>
               <Jumbotron style={{ backgroundColor: "white" }}>
                 <Media className="post-box" style={{ width: "100%" }}>
-                  <Media
-                    className="post-image mr-3 mb-3"
-                    style={{ float: "left" }}
-                  >
+                  <Media className="post-image" style={{ float: "left" }}>
                     {imageId && (
                       <Media
                         object
                         src={`/api/images/render/${imageId}`}
                         alt="Generic placeholder image"
+                        style={{ width: "300px", height: "300px" }}
                       />
                     )}
                   </Media>
@@ -71,16 +79,49 @@ export class PostInfo extends Component<propTypes> {
                       <p className="text-muted">{`Date: ${formattedDate}`}</p>
                     )}
                     <p
-                      style={{
-                        fontSize: "1rem",
-                        overflowX: "hidden",
-                        whiteSpace: "pre-wrap",
-                        fontFamily: "inherit",
-                      }}
+                      className="post-text"
+                      style={{ whiteSpace: "break-spaces" }}
                     >
                       {description}
                     </p>
                   </Media>
+                  <div>
+                    <div className="categories-floater pt-3 pr-3">
+                      <div />
+                      <div className="categories">
+                        {categoryIds?.length
+                          ? categoryIds.map((categoryId) => {
+                              const category = this.props.categories.find(
+                                (cat) => cat._id === categoryId
+                              );
+                              return (
+                                <h3>
+                                  <Badge
+                                    color={category?.color}
+                                    href={`/category/${category?.name}`}
+                                  >
+                                    {category?.name}
+                                  </Badge>
+                                </h3>
+                              );
+                            })
+                          : null}
+                      </div>
+                    </div>
+                    {this.props.auth.isAuthenticated && (
+                      <div className="px-3">
+                        <Button
+                          className="like-button"
+                          block
+                          color="info mt-3"
+                          outline={liked}
+                          onClick={this.onLike}
+                        >
+                          <b>{liked ? "Liked" : "Like"}</b>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </Media>
               </Jumbotron>
             </div>
@@ -133,8 +174,10 @@ export class PostInfo extends Component<propTypes> {
 }
 
 const mapStateToProps = (state: any) => ({
+  auth: state.auth,
   post: state.post.post,
   postLoading: state.post.postLoading,
+  categories: state.category.categories,
 });
 
 export default withRouter(connect(mapStateToProps, {})(PostInfo));

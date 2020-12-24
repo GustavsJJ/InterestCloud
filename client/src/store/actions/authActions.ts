@@ -57,7 +57,7 @@ export const register = ({ name, surname, email, password }: registerProps) => (
 
   const body = JSON.stringify({ name, surname, email, password });
   axios
-    .post("api/users", body, config)
+    .post("/api/users", body, config)
     .then((res) =>
       dispatch({
         type: REGISTER_SUCCESS,

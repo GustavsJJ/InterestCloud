@@ -6,12 +6,15 @@ import {
   ADD_POST,
   DELETE_POST,
   POST_LOADING,
+  LIKE_POST,
 } from "../actions/types";
 
 const initialState = {
   posts: [],
   postsLoading: false,
-  post: {},
+  post: {
+    liked: false,
+  },
   postLoading: false,
 };
 
@@ -48,6 +51,11 @@ export default function (state = initialState, action: IAction) {
       return {
         ...state,
         postLoading: true,
+      };
+    case LIKE_POST:
+      return {
+        ...state,
+        post: { ...state.post, liked: !state.post.liked },
       };
 
     default:

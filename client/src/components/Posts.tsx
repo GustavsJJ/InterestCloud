@@ -25,7 +25,7 @@ export class Posts extends Component<propTypes> {
   };
 
   componentDidMount() {
-    store.dispatch(getPosts());
+    store.dispatch(getPosts(this.props.sortBy));
   }
 
   render() {
@@ -36,7 +36,7 @@ export class Posts extends Component<propTypes> {
             <ListGroup>
               {!this.props.post.postsLoading &&
               !this.props.post.posts.length ? (
-                <ListGroupItem>
+                <ListGroupItem className="py-5">
                   <h2>No post found</h2>
                 </ListGroupItem>
               ) : this.props.post.posts.length ? (
@@ -44,12 +44,13 @@ export class Posts extends Component<propTypes> {
                   ({ _id, title, description, categoryIds, imageId }, i) => (
                     <ListGroupItem>
                       <Media className="post mt-2">
-                        <Media>
+                        <Media className="image-box">
                           <Link to={`/post/${_id}`}>
                             {imageId && (
                               <Media
                                 object
                                 className="post-image mb-1"
+                                style={{ width: "300px", height: "300px" }}
                                 // src={`https://picsum.photos/400/300?random=${i}`}
                                 src={`/api/images/render/${imageId}`}
                                 alt="Generic placeholder image"
@@ -63,11 +64,7 @@ export class Posts extends Component<propTypes> {
                           </Media>
                           <p
                             style={{
-                              overflowX: "hidden",
-                              fontSize: "1rem",
-                              whiteSpace: "pre-wrap",
-                              fontFamily: "inherit",
-                              marginBottom: "0px",
+                              whiteSpace: "break-spaces",
                             }}
                           >
                             {description.length > 900
@@ -77,23 +74,9 @@ export class Posts extends Component<propTypes> {
                         </Media>
                       </Media>
 
-                      <div
-                        className="categories-floater pt-3 pr-3"
-                        style={{
-                          clear: "both",
-                          display: "flex",
-                        }}
-                      >
+                      <div className="categories-floater pt-3 pr-3">
                         <div />
-                        <div
-                          className="categories"
-                          style={{
-                            display: "flex",
-                            flex: "wrap",
-                            flexWrap: "wrap",
-                            gap: "5px",
-                          }}
-                        >
+                        <div className="categories">
                           {categoryIds.length
                             ? categoryIds.map((categoryId) => {
                                 const category = this.props.categories.find(

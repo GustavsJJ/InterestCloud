@@ -4,23 +4,70 @@
     overflow: hidden;
     color: black;
 }
-.post-box {
+.post-container .post-box {
     display: block;
     min-height: 300px;
 }
 
-.post-content {
+.post-container .post-content {
     overflow-x: auto;
 }
 
-.post-box > .post-image {
+.post-container .post-box > .post-image {
     float: left;
     margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.post-container .post-text {
+    font-size: "1rem";
+    overflow-x: "auto";
+    white-space: "pre-wrap";
+    white-space: "pre-line";
+}
+
+.post-container .categories-floater {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-container .categories-floater .categories {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.post-container .categories-floater .categories > h3 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+.post-container .like-button {
+    width: 100%;
 }
 
 @media only screen and (max-width: 991px) {
-    .post-content {
+    .post-container .post-content {
         overflow-x: unset;
+    }
+
+    .post-container .post-text {
+        font-size: "1rem";
+        overflow-x: "hidden";
+        white-space: "pre-wrap";
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .post-container .categories-floater {
+        margin-left: 1rem;
+        justify-content: unset;
+    }
+
+    .post-container .categories-floater .categories > h3 {
+        margin-right: 0.5rem;
+        margin-left: 0;
     }
 }
 
@@ -28,33 +75,15 @@
     .post-container .media {
         width: 100%;
         justify-content: space-evenly;
-        margin-left: 0;
+      }
+      .post-container .post-box > .post-image {
+        margin: 0px;
         margin-bottom: 1rem;
       }
 }
 
 @media only screen and (max-width: 374px) {
-    .post-container .post-image {
+    .post-container .post-box > .post-image {
         display: none;
     }
 }
-
-/* .post-box > .post-content {
-    display: block;
-} */
-
-/* .post-container .post {
-    display: block;
-} */
-
-/* .post-container .media {
-    float: left;
-    margin-right: 1rem;
-} */
-
-/* .post-container .post-image {
-    margin-right: 1rem;
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-} */
