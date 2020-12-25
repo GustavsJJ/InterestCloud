@@ -12,12 +12,12 @@ import "./style/custom-bootstrap.css";
 import "./style/App.css";
 import Footer from "./components/tool/Footer";
 import About from "./components/About";
-import Category from "./components/Category";
 import PostInfo from "./components/PostInfo";
 import Profile from "./components/Profile";
 import { getCategories } from "./store/actions/categoryActions";
 import ErrorView from "./components/tool/ErrorView";
 import NewPost from "./components/NewPost";
+import { ICategory } from "./types/interfaces";
 
 class App extends Component {
   componentDidMount() {
@@ -50,7 +50,17 @@ class App extends Component {
                 <Route
                   exact
                   path="/category/:cat"
-                  render={() => <Category />}
+                  render={(route) => {
+                    const cat = route.match.params.cat;
+                    return (
+                      <>
+                        <div className="my-5">
+                          <h1>{cat}</h1>
+                        </div>
+                        <Posts sortBy={`cat-${cat}`} />
+                      </>
+                    );
+                  }}
                 />
                 <Route exact path="/newPost" render={() => <NewPost />} />
                 <Route

@@ -11,6 +11,7 @@ const images = require("./images");
 
 // middlewares
 const reporter = require("../../middleware/reporter");
+const Category = require("../../model/Category");
 
 // Gets user by token from MongoDB
 const getUserIdFromToken = (token) => {
@@ -28,19 +29,31 @@ const getUserIdFromToken = (token) => {
 // @description Get posts sorted by sortBy parameter
 // @access Public
 router.get("/sortBy=:sortBy", (req, res) => {
-  const sortBy = req.params.sortBy;
-  const token = req.header("x-auth-token");
-  const userId = getUserIdFromToken(token);
-  if (!userId) return res.status(userId.status).json(userId.msg);
+  let sortBy = req.params.sortBy;
+  if (sortBy.startsWith("cat-")) {
+    sortBy = "category-sort";
+  }
 
   switch (sortBy) {
     case "user-viewedHistory":
+      const token = req.header("x-auth-token");
+      const userId = getUserIdFromToken(token);
+      if (!userId) return res.status(userId.status).json(userId.msg);
       PostUser.find({ userId: userId.userId })
         .sort({ viewedDate: -1 })
         .populate("postId")
         .then((postUser) => {
           return res.json(postUser.map((pu) => pu.postId));
         });
+      break;
+    case "category-sort":
+      const categoryName = req.params.sortBy.replace("cat-", "");
+      Category.findOne({ name: categoryName }).then((category) => {
+        const catId = category.id;
+        Post.find({ categoryIds: catId }).then((posts) => {
+          return res.json(posts);
+        });
+      });
       break;
     default:
       Post.find()
