@@ -7,9 +7,7 @@ function admin(req, res, next) {
   const token = req.header("x-auth-token");
 
   // Check for token
-  if (!token) {
-    return res.status(401).json("No token, action denied");
-  }
+  if (!token) return res.status(401).json("No token, action denied");
 
   try {
     // Verify token

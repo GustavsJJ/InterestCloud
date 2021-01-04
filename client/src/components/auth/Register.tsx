@@ -13,13 +13,14 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { register } from "../../store/actions/authActions";
-import { clearErrors } from "../../store/actions/errorActions";
+import { clearErrors, returnErrors } from "../../store/actions/errorActions";
 
 interface propTypes {
   isAuthenticated: boolean | null | undefined;
   error: any;
   register: Function;
   clearErrors: Function;
+  returnErrors: Function;
 }
 
 class Register extends Component<propTypes> {
@@ -29,6 +30,7 @@ class Register extends Component<propTypes> {
     surname: "",
     email: "",
     password: "",
+    confPassword: "",
     msg: null,
   };
 
@@ -58,19 +60,30 @@ class Register extends Component<propTypes> {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  onKeyDown = (e: any) => {
+    if (e.key === "Enter") this.onSubmit(e);
+  };
+
   onSubmit = (e: any) => {
     e.preventDefault();
 
-    const { name, surname, email, password } = this.state;
-
-    const newUser = {
-      name,
-      surname,
-      email,
-      password,
-    };
-
-    this.props.register(newUser);
+    const { name, surname, email, password, confPassword } = this.state;
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (!email.match(emailRegex))
+      // validates email
+      this.setState({ msg: "Email is not valid" });
+    else if (password !== confPassword)
+      // validates password
+      this.setState({ msg: "Passwords do not match" });
+    else {
+      const newUser = {
+        name,
+        surname,
+        email,
+        password,
+      };
+      this.props.register(newUser);
+    }
   };
 
   render() {
@@ -94,8 +107,10 @@ class Register extends Component<propTypes> {
                   id="name"
                   placeholder="Name"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
+
                 <Label for="surname">Surname</Label>
                 <Input
                   type="text"
@@ -103,8 +118,10 @@ class Register extends Component<propTypes> {
                   id="surname"
                   placeholder="Surname"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
+
                 <Label for="email">Email</Label>
                 <Input
                   type="email"
@@ -112,6 +129,7 @@ class Register extends Component<propTypes> {
                   id="email"
                   placeholder="Email"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
                 <Label for="password">Password</Label>
@@ -121,11 +139,23 @@ class Register extends Component<propTypes> {
                   id="password"
                   placeholder="Password"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
+                  style={{ marginBottom: "10px" }}
+                />
+                <Label for="confPassword">Confirm Password</Label>
+                <Input
+                  type="password"
+                  name="confPassword"
+                  id="confPassword"
+                  placeholder="Password"
+                  onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
                 <Button
                   color="dark"
                   onClick={this.onSubmit}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginTop: "30px" }}
                   block
                 >
@@ -144,4 +174,8 @@ const mapStateToProps = (state: any) => ({
   error: state.error,
 });
 
-export default connect(mapStateToProps, { register, clearErrors })(Register);
+export default connect(mapStateToProps, {
+  register,
+  clearErrors,
+  returnErrors,
+})(Register);

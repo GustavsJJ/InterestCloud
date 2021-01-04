@@ -17,7 +17,6 @@ import Profile from "./components/Profile";
 import { getCategories } from "./store/actions/categoryActions";
 import ErrorView from "./components/tool/ErrorView";
 import NewPost from "./components/NewPost";
-import { ICategory } from "./types/interfaces";
 
 class App extends Component {
   componentDidMount() {

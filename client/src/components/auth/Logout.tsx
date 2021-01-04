@@ -4,16 +4,16 @@ import { connect } from "react-redux";
 import { logout } from "../../store/actions/authActions";
 
 interface propTypes {
-  logout: () => {};
+  logout: Function;
 }
 
 export class Logout extends Component<propTypes> {
+  onLogout = () => {
+    this.props.logout();
+  };
+
   render() {
-    return (
-      <DropdownItem onClick={this.props.logout} href="/">
-        Logout
-      </DropdownItem>
-    );
+    return <DropdownItem onClick={this.onLogout}>Logout</DropdownItem>;
   }
 }
 

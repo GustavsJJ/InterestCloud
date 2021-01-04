@@ -5,13 +5,15 @@ const config = require("config");
 
 const Post = require("../../model/Post");
 const User = require("../../model/User");
+const Category = require("../../model/Category");
 const PostUser = require("../../model/PostUser");
+const CategoryUser = require("../../model/CategoryUser");
 
 const images = require("./images");
 
 // middlewares
 const reporter = require("../../middleware/reporter");
-const Category = require("../../model/Category");
+const admin = require("../../middleware/admin");
 
 // Gets user by token from MongoDB
 const getUserIdFromToken = (token) => {
@@ -30,16 +32,14 @@ const getUserIdFromToken = (token) => {
 // @access Public
 router.get("/sortBy=:sortBy", (req, res) => {
   let sortBy = req.params.sortBy;
-  if (sortBy.startsWith("cat-")) {
-    sortBy = "category-sort";
-  }
+  if (sortBy.startsWith("cat-")) sortBy = "category-sort";
 
+  const token = req.header("x-auth-token");
+  const userId = getUserIdFromToken(token).userId;
   switch (sortBy) {
     case "user-viewedHistory":
-      const token = req.header("x-auth-token");
-      const userId = getUserIdFromToken(token);
       if (!userId) return res.status(userId.status).json(userId.msg);
-      PostUser.find({ userId: userId.userId })
+      PostUser.find({ userId: userId })
         .sort({ viewedDate: -1 })
         .populate("postId")
         .then((postUser) => {
@@ -50,9 +50,11 @@ router.get("/sortBy=:sortBy", (req, res) => {
       const categoryName = req.params.sortBy.replace("cat-", "");
       Category.findOne({ name: categoryName }).then((category) => {
         const catId = category.id;
-        Post.find({ categoryIds: catId }).then((posts) => {
-          return res.json(posts);
-        });
+        Post.find({ categoryIds: catId })
+          .sort({ date: -1 })
+          .then((posts) => {
+            return res.json(posts);
+          });
       });
       break;
     default:
@@ -64,11 +66,86 @@ router.get("/sortBy=:sortBy", (req, res) => {
 
 // @route GET api/posts
 // @description Get all Posts
-// @access Public
+// @access Public / Private
 router.get("/", (req, res) => {
-  Post.find()
-    .sort({ date: -1 })
-    .then((posts) => res.json(posts));
+  const token = req.header("x-auth-token");
+  const userId = getUserIdFromToken(token).userId;
+  if (!userId) {
+    Post.find()
+      .sort({ date: -1 })
+      .then((posts) => res.json(posts));
+  } else {
+    CategoryUser.find({ userId, points: { $gt: 0 } })
+      .sort({ points: -1 })
+      .then((catUsrs) => {
+        let period = new Date();
+        period.setDate(period.getDate() - 14); // ignores posts that are two weeks old
+
+        PostUser.find({ userId }).then((pstUsrs) => {
+          const seenPosts = pstUsrs.map((pu) => pu.postId); // posts that have been seen by the user
+
+          Post.aggregate([
+            {
+              $match: {
+                date: { $gt: period },
+                _id: { $nin: seenPosts },
+              },
+            },
+            {
+              $lookup: {
+                from: "postusers",
+                localField: "_id",
+                foreignField: "postId",
+                as: "views",
+              },
+            },
+            {
+              $addFields: {
+                views: {
+                  $size: "$views",
+                },
+              },
+            },
+            { $limit: 25 },
+          ]).then((posts) => {
+            const categoryOrder = catUsrs.map((c) => c.categoryId.toString());
+
+            // sorts posts by date, category and views
+            const sorter = (a, b) => {
+              const setCategoryValues = (arr) => {
+                return arr.categoryIds
+                  .map((catId) => {
+                    if (categoryOrder.includes(catId.toString()))
+                      return (
+                        categoryOrder.length -
+                        categoryOrder.indexOf(catId.toString())
+                      );
+                    else return 0;
+                  })
+                  .sort((c, d) => d - c);
+              };
+              const aPost = setCategoryValues(a);
+              const bPost = setCategoryValues(b);
+              if (a.date.getDate() > b.date.getDate()) return 1;
+              if (a.date.getDate() < b.date.getDate()) return -1;
+              if (aPost[0] > bPost[0]) return -1;
+              if (aPost[0] < bPost[0]) return 1;
+              if (aPost[1] > bPost[1]) return -1;
+              if (aPost[1] < bPost[1]) return 1;
+              if (aPost[2] > bPost[2]) return -1;
+              if (aPost[2] < bPost[2]) return 1;
+              if (a.views > b.views) return -1;
+              if (a.views < b.views) return 1;
+
+              return 0;
+            };
+
+            const sortedPosts = posts.sort(sorter);
+            res.json(sortedPosts);
+          });
+        });
+      });
+  }
 });
 
 // @route POST api/posts
@@ -89,24 +166,31 @@ router.post("/", reporter, (req, res) => {
     return res.status(400).json("No more than three categories are allowed");
 
   User.findOne({ _id: userId }).then((user) => {
-    const newPost = new Post({
-      title: req.body.title,
-      description: req.body.text,
-      categoryIds: req.body.categories,
-      author: user.name + " " + user.surname,
-      date: Date.now(),
-    });
-    newPost.save().then((post) => res.json(post));
+    Category.find({ _id: { $in: req.body.categories } })
+      .sort({
+        position: 1,
+      })
+      .then((categories) => {
+        const cat = categories.map((c) => c.id);
+        const newPost = new Post({
+          title: req.body.title,
+          description: req.body.text,
+          categoryIds: cat,
+          author: user.name + " " + user.surname,
+          date: Date.now(),
+        });
+        newPost.save().then((post) => res.json(post));
+      });
   });
 });
 
 // @route DELETE api/posts/:id
 // @description Delete a Post
 // @access Private
-router.delete("/:id", (req, res) => {
+router.delete("/:id", admin, (req, res) => {
   const postId = req.params.id;
 
-  PostUser.deleteMany({ postId: postId })
+  PostUser.deleteMany({ postId })
     .then(() => {
       Post.findById(postId)
         .then((post) => {
@@ -156,6 +240,8 @@ router.get("/:id/like", (req, res) => {
           // checks if post is liked or unliked
           postUser.likedDate = postUser.likedDate ? undefined : Date.now();
           postUser.save();
+          // add 5 points for each post category
+          addPointsToCategories(userId, postId, postUser.likedDate ? 5 : -5);
           res.json("Post like status updated");
         } else {
           // if postUser record can not be found
@@ -165,6 +251,8 @@ router.get("/:id/like", (req, res) => {
             likedDate: Date.now(),
           });
           newPostUser.save();
+          // add 5 points for each post category
+          addPointsToCategories(userId, postId, 5);
           res.json("Post like status updated");
         }
       });
@@ -182,37 +270,45 @@ router.get("/:id", (req, res) => {
   const postId = req.params.id;
   const token = req.header("x-auth-token");
   if (token) {
+    // if user is authenticated
     try {
       // Verify token
       const decoded = jwt.verify(token, config.get("jwtSecret"));
       const userId = decoded.id;
-      // Set Post as viewed
-      PostUser.findOne({ userId: userId, postId: postId }).then((postUser) => {
-        if (postUser) {
-          // if postUser record can be found
-          postUser.viewedDate = Date.now();
-          postUser.save();
-          Post.findById(postId)
-            .then((post) => {
+
+      Post.findById(postId)
+        .then((post) => {
+          // Set Post as viewed
+          PostUser.findOne({ userId: userId, postId: postId }).then(
+            (postUser) => {
+              if (postUser) {
+                // if postUser record can be found
+                postUser.viewedDate = Date.now();
+                postUser.save();
+              } else {
+                // if postUser record can not be found
+                const newPostUser = new PostUser({
+                  userId,
+                  postId,
+                  viewedDate: Date.now(),
+                });
+                newPostUser.save();
+                // add 1 point for each post category
+                addPointsToCategories(userId, postId, 1);
+                console.log(post);
+
+                findPostAndSend(postId, res);
+              }
               return res.json({
                 ...post._doc,
                 liked: postUser.likedDate ? true : false,
               });
-            })
-            .catch((error) => {
-              return res.status(404).json("Post cannot be found");
-            });
-        } else {
-          // if postUser record can not be found
-          const newPostUser = new PostUser({
-            userId,
-            postId,
-            viewedDate: Date.now(),
-          });
-          newPostUser.save();
-          findPostAndSend(postId, res);
-        }
-      });
+            }
+          );
+        })
+        .catch((e) => {
+          return res.json("Post cannot be found");
+        });
     } catch (e) {
       findPostAndSend(postId, res);
     }
@@ -222,7 +318,29 @@ router.get("/:id", (req, res) => {
 const findPostAndSend = (postId, res) => {
   Post.findById(postId)
     .then((post) => res.json(post))
-    .catch((error) => res.status(404).json("Post cannot be found"));
+    .catch((e) => res.json({}));
+};
+
+const addPointsToCategories = (userId, postId, points) => {
+  Post.findById(postId).then((post) => {
+    const categoryIds = post.categoryIds;
+    categoryIds.forEach((categoryId) => {
+      CategoryUser.findOne({ userId, categoryId }).then((catUsr) => {
+        if (catUsr) {
+          catUsr.points =
+            catUsr.points + points >= 0 ? catUsr.points + points : 0;
+          catUsr.save();
+        } else {
+          const catUsr = new CategoryUser({
+            userId,
+            categoryId,
+            points,
+          });
+          catUsr.save();
+        }
+      });
+    });
+  });
 };
 
 module.exports = router;

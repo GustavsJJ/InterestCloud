@@ -1,10 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button, Container, Jumbotron, Media, Progress } from "reactstrap";
+import {
+  Button,
+  Container,
+  Jumbotron,
+  Media,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Progress,
+} from "reactstrap";
 import { IAuth, ICategory } from "../types/interfaces";
 import Loading from "./tool/Loading";
 import "./Profile.css";
 import ErrorView from "./tool/ErrorView";
+import { addPoints, resetPoints } from "../store/actions/categoryActions";
+import store from "../store/store";
+import { deleteSelf } from "../store/actions/authActions";
 
 interface propTypes {
   auth: IAuth;
@@ -12,8 +25,82 @@ interface propTypes {
 }
 
 export class Profile extends Component<propTypes> {
+  state = {
+    maxPoints: 1, // sum of category points
+    modal: false,
+    modalText: "",
+    modalActionText: "",
+    modalActionFunction: () => {},
+  };
+
+  // sets maxPoints to sum of category points
+  componentDidUpdate(prevProps: propTypes) {
+    if (this.props.categories !== prevProps.categories) {
+      const categories = this.props.categories;
+      let maxPoints = 0;
+      categories.forEach(
+        (category) => (maxPoints += category.points ? category.points : 0)
+      );
+      this.setState({ maxPoints: maxPoints });
+    }
+  }
+
+  // adds 5% of maxPoints to the category, if points are less than 1 then 1 point is added
+  onAddPoints = (categoryId: string) => {
+    let points = Math.floor((this.state.maxPoints / 100) * 5);
+    if (points < 1) points = 1;
+    store.dispatch(addPoints(categoryId, points));
+  };
+
+  // removes 5% of maxPoints to the category, if points are less than 1 then 1 point is removed
+  onRemovePoints = (categoryId: string) => {
+    let points = Math.floor((this.state.maxPoints / 100) * 5);
+    if (points < 1) points = 1;
+    points = points * -1;
+    store.dispatch(addPoints(categoryId, points));
+  };
+
+  // resets points
+  onPointReset = () => {
+    store.dispatch(resetPoints());
+    this.setState({ modal: false });
+  };
+
+  // delete user
+  onDeleteSelf = () => {
+    store.dispatch(deleteSelf());
+    this.setState({ modal: false });
+  };
+
+  deleteModal = () => {
+    this.setState({
+      modal: !this.state.modal,
+      modalText: "Are you sure you want to delete this account?",
+      modalActionText: "Delete",
+      modalActionFunction: this.onDeleteSelf,
+    });
+  };
+
+  resetModal = () => {
+    this.setState({
+      modal: !this.state.modal,
+      modalText: "Are you sure you want to reset interest?",
+      modalActionText: "Reset",
+      modalActionFunction: this.onPointReset,
+    });
+  };
+
+  toggle = () => {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  };
+
   render() {
     const { user, isAuthenticated, isLoading } = this.props.auth;
+    const categories = this.props.categories;
+    let maxPoints = 0;
+
     return (
       <Container className="post-container mt-5">
         {!isLoading && !isAuthenticated ? (
@@ -50,38 +137,42 @@ export class Profile extends Component<propTypes> {
                     <div className="interestProgressBar">
                       <h6>Interest: </h6>
                       <Progress multi className="profileInterestBar">
-                        <Progress
-                          bar
-                          color={this.props.categories[0]?.color}
-                          value="15"
-                        >
-                          15%
-                        </Progress>
-                        <Progress bar color="green" value="30" />
-                        <Progress bar color="cyan" value="25" />
-                        <Progress bar color="yellow" value="20" />
-                        <Progress bar color="blue" value="5" />
-                        <Progress bar color="brown" value="5" />
+                        {categories.map((category) => {
+                          const points = category.points
+                            ? (category.points / this.state.maxPoints) * 100
+                            : 0;
+                          return (
+                            <Progress bar color={category.color} value={points}>
+                              {points > 10 && `${points.toFixed(0)}%`}
+                            </Progress>
+                          );
+                        })}
                       </Progress>
                     </div>
                     <hr />
                     <div className="interestEditor mt-3">
-                      <h6 className="mr-3">Add interest by 5 points:</h6>
+                      <h6 className="mr-3">Add interest:</h6>
                       <div>
-                        {this.props.categories.map((category) => (
-                          <Button color={category.color}>
-                            {`${category.name} +5`}
+                        {categories.map((category) => (
+                          <Button
+                            color={category.color}
+                            onClick={() => this.onAddPoints(category._id)}
+                          >
+                            {`${category.name} +`}
                           </Button>
                         ))}
                       </div>
                     </div>
 
                     <div className="interestEditor mt-3">
-                      <h6 className="mr-3">Add interest by 50 points:</h6>
+                      <h6 className="mr-3">Remove interest:</h6>
                       <div>
-                        {this.props.categories.map((category) => (
-                          <Button color={category.color}>
-                            {`${category.name} +50`}
+                        {categories.map((category) => (
+                          <Button
+                            color={category.color}
+                            onClick={() => this.onRemovePoints(category._id)}
+                          >
+                            {`${category.name} -`}
                           </Button>
                         ))}
                       </div>
@@ -106,6 +197,7 @@ export class Profile extends Component<propTypes> {
                         style={{ marginTop: "20px" }}
                         block
                         outline
+                        onClick={this.resetModal}
                       >
                         Reset Interest
                       </Button>
@@ -113,9 +205,29 @@ export class Profile extends Component<propTypes> {
                         color="danger"
                         style={{ marginTop: "20px" }}
                         block
+                        onClick={this.deleteModal}
                       >
                         Delete Profile
                       </Button>
+                      <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                        <ModalHeader toggle={this.toggle} />
+                        <ModalBody>{this.state.modalText}</ModalBody>
+                        <Button
+                          className="mx-3 mt-2"
+                          color="danger"
+                          onClick={this.state.modalActionFunction}
+                        >
+                          {this.state.modalActionText}
+                        </Button>
+                        <Button
+                          className="mx-3 my-3"
+                          color="primary"
+                          outline
+                          onClick={this.toggle}
+                        >
+                          Cancel
+                        </Button>
+                      </Modal>
                     </div>
                   </div>
                 </Media>
@@ -133,4 +245,6 @@ const mapStateToProps = (state: any) => ({
   categories: state.category.categories,
 });
 
-export default connect(mapStateToProps, {})(Profile);
+export default connect(mapStateToProps, { addPoints, resetPoints, deleteSelf })(
+  Profile
+);

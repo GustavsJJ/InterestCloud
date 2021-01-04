@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getPostById, likePost } from "../store/actions/postActions";
+import {
+  getPostById,
+  likePost,
+  deletePost,
+} from "../store/actions/postActions";
 import store from "../store/store";
 import { IAuth, ICategory, IPost } from "../types/interfaces";
 import { withRouter } from "react-router";
@@ -15,6 +19,7 @@ import {
   Media,
 } from "reactstrap";
 import "./PostInfo.css";
+import ErrorView from "./tool/ErrorView";
 
 interface propTypes {
   auth: IAuth;
@@ -32,6 +37,10 @@ export class PostInfo extends Component<propTypes> {
 
   onLike = () => {
     store.dispatch(likePost(this.props.post._id));
+  };
+
+  onDelete = () => {
+    store.dispatch(deletePost(this.props.post._id));
   };
 
   render() {
@@ -54,7 +63,7 @@ export class PostInfo extends Component<propTypes> {
           <div>
             <Loading />
           </div>
-        ) : this.props.post ? (
+        ) : title ? (
           <div style={{ fontSize: "1rem" }}>
             <div>
               <Jumbotron style={{ backgroundColor: "white" }}>
@@ -121,6 +130,20 @@ export class PostInfo extends Component<propTypes> {
                         </Button>
                       </div>
                     )}
+                    {this.props.auth.isAuthenticated &&
+                      this.props.auth.user.role === "admin" && (
+                        <div className="px-3 mt-3">
+                          <Button
+                            className="delete-button"
+                            block
+                            color="danger"
+                            outline
+                            onClick={this.onDelete}
+                          >
+                            <b>Delete Post</b>
+                          </Button>
+                        </div>
+                      )}
                   </div>
                 </Media>
               </Jumbotron>
@@ -167,7 +190,9 @@ export class PostInfo extends Component<propTypes> {
               </Jumbotron>
             </div>
           </div>
-        ) : null}
+        ) : (
+          ErrorView("404", "Post Not Found")
+        )}
       </Container>
     );
   }

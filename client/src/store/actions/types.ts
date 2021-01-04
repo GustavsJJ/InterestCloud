@@ -26,3 +26,5 @@ export const LIKE_POST = "LIKE_POST";
 
 // CATEGORY ACTIONS
 export const GET_CATEGORIES = "GET_CATEGORIES";
+export const ADD_POINTS = "ADD_POINTS";
+export const RESET_POINTS = "RESET_POINTS";

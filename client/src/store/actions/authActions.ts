@@ -58,12 +58,13 @@ export const register = ({ name, surname, email, password }: registerProps) => (
   const body = JSON.stringify({ name, surname, email, password });
   axios
     .post("/api/users", body, config)
-    .then((res) =>
+    .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
-      })
-    )
+      });
+      window.location.href = "./";
+    })
     .catch((err) => {
       dispatch(
         returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
@@ -87,7 +88,10 @@ export const login = ({ email, password }: loginProps) => (
   const body = JSON.stringify({ email, password });
   axios
     .post("/api/auth", body, config)
-    .then((res) => dispatch({ type: LOGIN_SUCCESS, payload: res.data }))
+    .then((res) => {
+      dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+      window.location.href = "./";
+    })
     .catch((err) => {
       dispatch(
         returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
@@ -97,8 +101,19 @@ export const login = ({ email, password }: loginProps) => (
 };
 
 // Logout user
-export const logout = () => (dispatch: Function) =>
+export const logout = () => (dispatch: Function) => {
   dispatch({ type: LOGOUT_SUCCESS });
+  window.location.href = "./";
+};
+
+export const deleteSelf = () => (dispatch: Function, getState: Function) => {
+  axios
+    .get("/api/users/deleteSelf", getHeaderConfig(getState()))
+    .then((res) => {
+      dispatch({ type: LOGOUT_SUCCESS });
+      window.location.href = "./";
+    });
+};
 
 // Sets header config with token
 export const getHeaderConfig = (state: any) => {

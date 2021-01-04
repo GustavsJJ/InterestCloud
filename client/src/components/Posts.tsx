@@ -51,7 +51,7 @@ export class Posts extends Component<propTypes> {
                                 object
                                 className="post-image mb-1"
                                 style={{ width: "300px", height: "300px" }}
-                                // src={`https://picsum.photos/400/300?random=${i}`}
+                                // src={`https://picsum.photos/300/300?random=${i}`}
                                 src={`/api/images/render/${imageId}`}
                                 alt="Generic placeholder image"
                               />

@@ -24,9 +24,10 @@ export const getPosts = (sortBy?: string) => (
   getState: Function
 ) => {
   dispatch({ type: POSTS_LOADING });
+  const config = getHeaderConfig(getState());
   if (!sortBy) {
     axios
-      .get("/api/posts")
+      .get("/api/posts", config)
       .then((res) => {
         dispatch({ type: GET_POSTS, payload: res.data });
       })
@@ -34,14 +35,13 @@ export const getPosts = (sortBy?: string) => (
         dispatch(returnErrors(err.response.data, err.response.status));
       });
   } else {
-    const config = getHeaderConfig(getState());
     axios
       .get(`/api/posts/sortBy=${sortBy}`, config)
       .then((res) => {
         dispatch({ type: GET_POSTS, payload: res.data });
       })
       .catch((err: any) => {
-        dispatch(returnErrors(err.response.msg, err.response.status));
+        dispatch(returnErrors(err.response.data, err.response.status));
       });
   }
 };
@@ -118,6 +118,22 @@ export const likePost = (id: string) => (
     .get(`/api/posts/${id}/like`, config)
     .then((res) => {
       dispatch({ type: LIKE_POST });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const deletePost = (id: string) => (
+  dispatch: Function,
+  getState: Function
+) => {
+  const config = getHeaderConfig(getState());
+  axios
+    .delete(`/api/posts/${id}`, config)
+    .then((res) => {
+      dispatch({ type: DELETE_POST, payload: id });
+      alert("Post deleted");
     })
     .catch((err) => {
       console.error(err);

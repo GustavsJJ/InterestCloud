@@ -5,6 +5,12 @@ export enum E_ERROR {
   REGISTER_FAIL = "REGISTER_FAIL",
 }
 
+export interface IError {
+  msg: string;
+  status: number;
+  id: any;
+}
+
 export interface IUser {
   id: string;
   name: string;
@@ -35,6 +41,7 @@ export interface ICategory {
   _id: string;
   name: string;
   color: string;
+  points?: number;
 }
 
 export interface IImage {

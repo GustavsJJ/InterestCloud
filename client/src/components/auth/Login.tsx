@@ -56,6 +56,10 @@ class Login extends Component<propTypes> {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  onKeyDown = (e: any) => {
+    if (e.key === "Enter") this.onSubmit(e);
+  };
+
   onSubmit = (e: any) => {
     e.preventDefault();
     const { email, password } = this.state;
@@ -89,6 +93,7 @@ class Login extends Component<propTypes> {
                   id="email"
                   placeholder="Email"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
                 <Label for="password">Password</Label>
@@ -98,6 +103,7 @@ class Login extends Component<propTypes> {
                   id="password"
                   placeholder="Password"
                   onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
                   style={{ marginBottom: "10px" }}
                 />
                 <Button
