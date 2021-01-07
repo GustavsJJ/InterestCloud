@@ -10,6 +10,8 @@ export const AUTH_ERROR = "AUTH_ERROR";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
+
 // ERROR ACTIONS
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
@@ -28,3 +30,7 @@ export const LIKE_POST = "LIKE_POST";
 export const GET_CATEGORIES = "GET_CATEGORIES";
 export const ADD_POINTS = "ADD_POINTS";
 export const RESET_POINTS = "RESET_POINTS";
+
+// COMMENT ACTIONS
+export const GET_COMMENTS = "GET_COMMENTS";
+export const ADD_COMMENT = "ADD_COMMENT";

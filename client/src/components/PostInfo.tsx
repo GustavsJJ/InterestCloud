@@ -5,14 +5,17 @@ import {
   likePost,
   deletePost,
 } from "../store/actions/postActions";
-import store from "../store/store";
-import { IAuth, ICategory, IPost } from "../types/interfaces";
+import { IAuth, ICategory, IComment, IPost } from "../types/interfaces";
 import { withRouter } from "react-router";
 import Loading from "./tool/Loading";
 import {
+  Alert,
   Badge,
   Button,
   Container,
+  Form,
+  FormText,
+  Input,
   Jumbotron,
   ListGroup,
   ListGroupItem,
@@ -20,27 +23,73 @@ import {
 } from "reactstrap";
 import "./PostInfo.css";
 import ErrorView from "./tool/ErrorView";
+import { getComments, addComment } from "../store/actions/commentActions";
 
 interface propTypes {
   auth: IAuth;
   post: IPost;
   postLoading: boolean;
   categories: ICategory[];
+  comments: IComment[];
   match: any;
+  getPostById: Function;
+  getComments: Function;
+  addComment: Function;
+  likePost: Function;
+  deletePost: Function;
 }
 
 export class PostInfo extends Component<propTypes> {
+  state = {
+    comment: "",
+    message: "",
+    alert: false,
+    alertColor: "",
+  };
+
   componentDidMount() {
     const id = this.props.match.params.id;
-    store.dispatch(getPostById(id));
+    this.props.getPostById(id);
+    this.props.getComments(id);
   }
 
   onLike = () => {
-    store.dispatch(likePost(this.props.post._id));
+    this.props.likePost(this.props.post._id);
   };
 
   onDelete = () => {
-    store.dispatch(deletePost(this.props.post._id));
+    this.props.deletePost(this.props.post._id);
+  };
+
+  onChange = (e: any) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  onSubmit = (e: any) => {
+    e.preventDefault();
+
+    const comment = this.state.comment;
+    this.props.addComment(
+      this.props.match.params.id,
+      comment,
+      this.onOpenAlert
+    );
+  };
+
+  onOpenAlert = (msg: string, isError: boolean) => {
+    this.setState({
+      message: msg,
+      alert: true,
+      alertColor: isError ? "danger" : "success",
+      comment: isError ? this.state.comment : "",
+    });
+  };
+
+  onCloseAlert = () => {
+    this.setState({
+      message: "",
+      alert: false,
+    });
   };
 
   render() {
@@ -149,43 +198,66 @@ export class PostInfo extends Component<propTypes> {
               </Jumbotron>
             </div>
             <div className="comment-box">
-              <Jumbotron style={{ backgroundColor: "white" }}>
-                <h4 className="mb-3 ml-2">Comments: </h4>
+              <Jumbotron className="p-5" style={{ backgroundColor: "white" }}>
+                {this.props.auth.isAuthenticated && (
+                  <div>
+                    <Alert
+                      color={this.state.alertColor}
+                      isOpen={this.state.alert}
+                      toggle={this.onCloseAlert}
+                    >
+                      {this.state.message}
+                    </Alert>
+                    <h4 className="ml-2">Post Comment:</h4>
+                    <Form className="my-3">
+                      <Input
+                        type="textarea"
+                        style={{
+                          minHeight: "150px",
+                          justifyContent: "flex-start",
+                          wordBreak: "break-word",
+                        }}
+                        onChange={this.onChange}
+                        value={this.state.comment}
+                        name="comment"
+                      />
+                      <FormText color="muted">
+                        Comment cannot contain more than 250 symbols
+                      </FormText>
+                      <Button
+                        className="mt-3"
+                        color="info"
+                        onClick={this.onSubmit}
+                      >
+                        <b>Submit</b>
+                      </Button>
+                    </Form>
+                    <hr />
+                  </div>
+                )}
 
+                <h4 className="mb-3 ml-2">Comments: </h4>
                 <ListGroup>
-                  <ListGroupItem>
-                    <Media body>
-                      <Media heading style={{ fontSize: "1rem" }}>
-                        Commenter_1
-                      </Media>
-                      Vestibulum placerat varius leo, quis tincidunt ipsum
-                      efficitur vel. Nullam bibendum porta metus, in pretium
-                      diam ullamcorper id. Sed non urna ut lectus hendrerit
-                      feugiat a non massa. Donec nisi magna, viverra a tincidunt
-                      eu, gravida sit amet sapien. Nunc lacinia ipsum vel
-                      sollicitudin elementum. Nulla facilisi. Vivamus fringilla
-                      eros turpis, ut porttitor tortor euismod ac. Donec neque
-                      dolor, volutpat ut nunc eget, gravida faucibus dolor.
-                      Aliquam finibus, sem vel posuere pellentesque, est dolor
-                      ullamcorper ipsum, vitae vestibulum mi tortor in libero.
-                      Orci varius natoque penatibus et magnis dis parturient
-                      montes, nascetur ridiculus mus. Nam dolor sem, tincidunt
-                      eu consequat eu, mattis sit amet neque.
-                    </Media>
-                  </ListGroupItem>
-                  <ListGroupItem>
-                    <Media body>
-                      <Media heading style={{ fontSize: "1rem" }}>
-                        Commenter_2
-                      </Media>
-                      Aenean imperdiet risus sapien, nec commodo nisi porttitor
-                      eget. Integer porta imperdiet tortor ac porttitor. Etiam
-                      dignissim fringilla commodo. Quisque malesuada volutpat
-                      fringilla. Maecenas at dui sed ipsum accumsan commodo.
-                      Aliquam sem enim, laoreet id bibendum ut, tempor nec
-                      justo. Morbi viverra vulputate tellus.
-                    </Media>
-                  </ListGroupItem>
+                  {this.props.comments.length ? (
+                    this.props.comments.map((comment) => (
+                      <ListGroupItem>
+                        <Media body>
+                          <Media heading style={{ fontSize: "1rem" }}>
+                            {`${comment.authorId?.name} ${
+                              comment.authorId?.surname
+                                ? comment.authorId?.surname
+                                : ""
+                            }`}
+                          </Media>
+                          {comment.text}
+                        </Media>
+                      </ListGroupItem>
+                    ))
+                  ) : (
+                    <ListGroupItem style={{ justifyContent: "space-around" }}>
+                      <h5 className="m-3">No comments yet...</h5>
+                    </ListGroupItem>
+                  )}
                 </ListGroup>
               </Jumbotron>
             </div>
@@ -203,6 +275,15 @@ const mapStateToProps = (state: any) => ({
   post: state.post.post,
   postLoading: state.post.postLoading,
   categories: state.category.categories,
+  comments: state.comment.comments,
 });
 
-export default withRouter(connect(mapStateToProps, {})(PostInfo));
+export default withRouter(
+  connect(mapStateToProps, {
+    addComment,
+    getComments,
+    getPostById,
+    likePost,
+    deletePost,
+  })(PostInfo)
+);

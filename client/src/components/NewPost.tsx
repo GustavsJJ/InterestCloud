@@ -194,10 +194,13 @@ export class NewPost extends Component<propTypes> {
                       type="text"
                       onChange={this.onChange}
                     />
+                    <FormText color="muted">
+                      Title cannot contain more than 50 symbols
+                    </FormText>
                     <Label className="mt-1">Text</Label>
                     <Input
                       style={{
-                        minHeight: "135px",
+                        minHeight: "90px",
                         justifyContent: "flex-start",
                         wordBreak: "break-word",
                       }}
@@ -206,6 +209,9 @@ export class NewPost extends Component<propTypes> {
                       type="textarea"
                       onChange={this.onChange}
                     />
+                    <FormText color="muted">
+                      Text cannot contain more than 2000 symbols
+                    </FormText>
                     <Label className="mt-1">Categories</Label>
                     <FormGroup className="mb-0 pl-1">
                       {this.props.categories.map((category) => (

@@ -3,7 +3,6 @@ import {
   GET_POSTS,
   POSTS_LOADING,
   GET_POST,
-  ADD_POST,
   DELETE_POST,
   POST_LOADING,
   LIKE_POST,
@@ -51,6 +50,10 @@ export const getPostById = (id: string) => (
   getState: Function
 ) => {
   const config = getHeaderConfig(getState());
+  // disabling cache to check if post liked
+  config.headers["Cache-Control"] = "no-cache";
+  config.headers["Pragma"] = "no-cache";
+  config.headers["Expires"] = "0";
   dispatch({ type: POST_LOADING });
   axios
     .get("/api/posts/" + id, config)

@@ -14,6 +14,7 @@ const images = require("./images");
 // middlewares
 const reporter = require("../../middleware/reporter");
 const admin = require("../../middleware/admin");
+const Comment = require("../../model/Comment");
 
 // Gets user by token from MongoDB
 const getUserIdFromToken = (token) => {
@@ -88,7 +89,6 @@ router.get("/", (req, res) => {
             {
               $match: {
                 date: { $gt: period },
-                _id: { $nin: seenPosts },
               },
             },
             {
@@ -104,13 +104,16 @@ router.get("/", (req, res) => {
                 views: {
                   $size: "$views",
                 },
+                seen: {
+                  $cond: [{ $in: ["$_id", seenPosts] }, 1, 0],
+                },
               },
             },
+            { $sort: { seen: 1 } },
             { $limit: 25 },
           ]).then((posts) => {
             const categoryOrder = catUsrs.map((c) => c.categoryId.toString());
-
-            // sorts posts by date, category and views
+            // sorts posts by not seen, category, date and views
             const sorter = (a, b) => {
               const setCategoryValues = (arr) => {
                 return arr.categoryIds
@@ -126,17 +129,22 @@ router.get("/", (req, res) => {
               };
               const aPost = setCategoryValues(a);
               const bPost = setCategoryValues(b);
-              if (a.date.getDate() > b.date.getDate()) return 1;
-              if (a.date.getDate() < b.date.getDate()) return -1;
+              // first: sorts by unseen
+              if (a.seen > b.seen) return 1;
+              if (a.seen < b.seen) return -1;
+              // secound: sorts by relevant categories
               if (aPost[0] > bPost[0]) return -1;
               if (aPost[0] < bPost[0]) return 1;
               if (aPost[1] > bPost[1]) return -1;
               if (aPost[1] < bPost[1]) return 1;
               if (aPost[2] > bPost[2]) return -1;
               if (aPost[2] < bPost[2]) return 1;
+              // third: sorts by date
+              if (a.date.getDate() > b.date.getDate()) return 1;
+              if (a.date.getDate() < b.date.getDate()) return -1;
+              // fourth: sorts by views
               if (a.views > b.views) return -1;
               if (a.views < b.views) return 1;
-
               return 0;
             };
 
@@ -159,6 +167,12 @@ router.post("/", reporter, (req, res) => {
   if (!req.body.title || !req.body.text)
     return res.status(400).json("Please enter all fields");
 
+  if (req.body.title.length > 50)
+    return res.status(400).json("Title can have no more than 50 symbols");
+
+  if (req.body.text.length > 2000)
+    return res.status(400).json("Text can have no more than 2000 symbols");
+
   if (!req.body.categories.length)
     return res.status(400).json("Please select at least one category");
 
@@ -172,11 +186,14 @@ router.post("/", reporter, (req, res) => {
       })
       .then((categories) => {
         const cat = categories.map((c) => c.id);
+        const name = user.name ? user.name : "";
+        const surname = user.surname ? user.surname : "";
+        const author = name ? name + " " + surname : surname;
         const newPost = new Post({
           title: req.body.title,
           description: req.body.text,
           categoryIds: cat,
-          author: user.name + " " + user.surname,
+          author: author ? author : "unknown",
           date: Date.now(),
         });
         newPost.save().then((post) => res.json(post));
@@ -192,20 +209,24 @@ router.delete("/:id", admin, (req, res) => {
 
   PostUser.deleteMany({ postId })
     .then(() => {
-      Post.findById(postId)
-        .then((post) => {
-          const imageId = post.imageId;
-          post.deleteOne();
-          if (imageId) {
-            images
-              .deleteImage(imageId)
-              .then((msg) => {
-                return res.json({ success: true });
-              })
-              .catch(() => {
-                res.status(500).json({ success: false });
-              });
-          } else return res.json({ success: true });
+      Comment.deleteMany({ postId })
+        .then(() => {
+          Post.findById(postId)
+            .then((post) => {
+              const imageId = post.imageId;
+              post.deleteOne();
+              if (imageId) {
+                images
+                  .deleteImage(imageId)
+                  .then((msg) => {
+                    return res.json({ success: true });
+                  })
+                  .catch(() => {
+                    res.status(500).json({ success: false });
+                  });
+              } else return res.json({ success: true });
+            })
+            .catch((error) => res.status(404).json({ success: false }));
         })
         .catch((error) => res.status(404).json({ success: false }));
     })
@@ -295,8 +316,6 @@ router.get("/:id", (req, res) => {
                 newPostUser.save();
                 // add 1 point for each post category
                 addPointsToCategories(userId, postId, 1);
-                console.log(post);
-
                 findPostAndSend(postId, res);
               }
               return res.json({

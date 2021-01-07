@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   Button,
+  ButtonGroup,
   Container,
   Jumbotron,
   Media,
   Modal,
   ModalBody,
-  ModalFooter,
   ModalHeader,
   Progress,
 } from "reactstrap";
@@ -16,12 +16,16 @@ import Loading from "./tool/Loading";
 import "./Profile.css";
 import ErrorView from "./tool/ErrorView";
 import { addPoints, resetPoints } from "../store/actions/categoryActions";
-import store from "../store/store";
 import { deleteSelf } from "../store/actions/authActions";
+import EditProfile from "./profile/EditProfile";
+import ChangePassword from "./profile/ChangePassword";
 
 interface propTypes {
   auth: IAuth;
   categories: ICategory[];
+  addPoints: Function;
+  resetPoints: Function;
+  deleteSelf: Function;
 }
 
 export class Profile extends Component<propTypes> {
@@ -49,7 +53,7 @@ export class Profile extends Component<propTypes> {
   onAddPoints = (categoryId: string) => {
     let points = Math.floor((this.state.maxPoints / 100) * 5);
     if (points < 1) points = 1;
-    store.dispatch(addPoints(categoryId, points));
+    this.props.addPoints(categoryId, points);
   };
 
   // removes 5% of maxPoints to the category, if points are less than 1 then 1 point is removed
@@ -57,21 +61,22 @@ export class Profile extends Component<propTypes> {
     let points = Math.floor((this.state.maxPoints / 100) * 5);
     if (points < 1) points = 1;
     points = points * -1;
-    store.dispatch(addPoints(categoryId, points));
+    this.props.addPoints(categoryId, points);
   };
 
   // resets points
   onPointReset = () => {
-    store.dispatch(resetPoints());
+    this.props.resetPoints();
     this.setState({ modal: false });
   };
 
   // delete user
   onDeleteSelf = () => {
-    store.dispatch(deleteSelf());
+    this.props.deleteSelf();
     this.setState({ modal: false });
   };
 
+  // open delete modal
   deleteModal = () => {
     this.setState({
       modal: !this.state.modal,
@@ -81,6 +86,7 @@ export class Profile extends Component<propTypes> {
     });
   };
 
+  // open reset modal
   resetModal = () => {
     this.setState({
       modal: !this.state.modal,
@@ -90,6 +96,7 @@ export class Profile extends Component<propTypes> {
     });
   };
 
+  // toggles modal
   toggle = () => {
     this.setState({
       modal: !this.state.modal,
@@ -99,7 +106,6 @@ export class Profile extends Component<propTypes> {
   render() {
     const { user, isAuthenticated, isLoading } = this.props.auth;
     const categories = this.props.categories;
-    let maxPoints = 0;
 
     return (
       <Container className="post-container mt-5">
@@ -179,19 +185,13 @@ export class Profile extends Component<propTypes> {
                     </div>
 
                     <hr />
-                    <div
-                      className="filler"
-                      style={{ minHeight: "calc(100vh - 56rem)" }}
-                    ></div>
+
                     <div className="bottomButtons">
-                      <Button
-                        color="blue"
-                        style={{ marginTop: "20px" }}
-                        block
-                        outline
-                      >
-                        Edit Profile
-                      </Button>
+                      <ButtonGroup style={{ width: "100%" }}>
+                        <EditProfile />
+                        <ChangePassword />
+                      </ButtonGroup>
+
                       <Button
                         color="dark"
                         style={{ marginTop: "20px" }}
@@ -211,7 +211,9 @@ export class Profile extends Component<propTypes> {
                       </Button>
                       <Modal isOpen={this.state.modal} toggle={this.toggle}>
                         <ModalHeader toggle={this.toggle} />
-                        <ModalBody>{this.state.modalText}</ModalBody>
+                        <ModalBody style={{ textAlign: "center" }}>
+                          {this.state.modalText}
+                        </ModalBody>
                         <Button
                           className="mx-3 mt-2"
                           color="danger"

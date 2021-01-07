@@ -7,6 +7,7 @@ import {
   REGISTER_FAIL,
   USER_LOADING,
   USER_LOADED,
+  UPDATE_PROFILE,
 } from "../actions/types";
 
 const initialState = {
@@ -58,6 +59,16 @@ export default function (state = initialState, action: any) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+      };
+    case UPDATE_PROFILE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          name: action.payload.name,
+          surname: action.payload.surname,
+          email: action.payload.email,
+        },
       };
     default:
       return state;

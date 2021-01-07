@@ -1,6 +1,5 @@
 import axios from "axios";
 import { ADD_POINTS, GET_CATEGORIES, RESET_POINTS } from "./types";
-import { returnErrors } from "./errorActions";
 import { getHeaderConfig } from "./authActions";
 
 // gets all categories
@@ -12,7 +11,7 @@ export const getCategories = () => (dispatch: Function, getState: Function) => {
       dispatch({ type: GET_CATEGORIES, payload: res.data });
     })
     .catch((err: any) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      console.error(err.response.data, err.response.status);
     });
 };
 
@@ -27,7 +26,7 @@ export const addPoints = (categoryId: string, points: number) => (
     .post("/api/categories/addPoints", body, config)
     .then((res) => dispatch({ type: ADD_POINTS, payload: res.data }))
     .catch((err) => {
-      returnErrors(err.response.data, err.response.status);
+      console.error(err.response.data, err.response.status);
     });
 };
 
@@ -40,6 +39,6 @@ export const resetPoints = () => (dispatch: Function, getState: Function) => {
       dispatch({ type: RESET_POINTS });
     })
     .catch((err) => {
-      returnErrors(err.response.data, err.response.status);
+      console.error(err.response.data, err.response.status);
     });
 };

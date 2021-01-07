@@ -34,8 +34,10 @@ class Register extends Component<propTypes> {
     msg: null,
   };
 
+  // shows error or closes modal if registration was successful
   componentDidUpdate(prevProps: propTypes) {
     const { error, isAuthenticated } = this.props;
+    // shows error
     if (error !== prevProps.error) {
       if (error.id === "REGISTER_FAIL") this.setState({ msg: error.msg });
       else this.setState({ msg: null });
@@ -49,6 +51,7 @@ class Register extends Component<propTypes> {
     }
   }
 
+  // toggles modal
   toggle = () => {
     this.setState({
       modal: !this.state.modal,
@@ -56,19 +59,22 @@ class Register extends Component<propTypes> {
     this.props.clearErrors();
   };
 
+  // changes state values
   onChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  // executes onSubmit if "Enter" was pressed
   onKeyDown = (e: any) => {
     if (e.key === "Enter") this.onSubmit(e);
   };
 
+  // tries to register
   onSubmit = (e: any) => {
     e.preventDefault();
 
     const { name, surname, email, password, confPassword } = this.state;
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
     if (!email.match(emailRegex))
       // validates email
       this.setState({ msg: "Email is not valid" });

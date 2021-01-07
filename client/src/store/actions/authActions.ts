@@ -63,7 +63,7 @@ export const register = ({ name, surname, email, password }: registerProps) => (
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
-      window.location.href = "./";
+      window.location.href = "/";
     })
     .catch((err) => {
       dispatch(
@@ -90,7 +90,7 @@ export const login = ({ email, password }: loginProps) => (
     .post("/api/auth", body, config)
     .then((res) => {
       dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-      window.location.href = "./";
+      window.location.href = "/";
     })
     .catch((err) => {
       dispatch(
@@ -103,7 +103,7 @@ export const login = ({ email, password }: loginProps) => (
 // Logout user
 export const logout = () => (dispatch: Function) => {
   dispatch({ type: LOGOUT_SUCCESS });
-  window.location.href = "./";
+  window.location.href = "/";
 };
 
 export const deleteSelf = () => (dispatch: Function, getState: Function) => {
@@ -111,7 +111,10 @@ export const deleteSelf = () => (dispatch: Function, getState: Function) => {
     .get("/api/users/deleteSelf", getHeaderConfig(getState()))
     .then((res) => {
       dispatch({ type: LOGOUT_SUCCESS });
-      window.location.href = "./";
+      window.location.href = "/";
+    })
+    .catch((err) => {
+      alert("Problem occcured deleting profile. Please try again.");
     });
 };
 

@@ -42,7 +42,11 @@ router.get("/", (req, res) => {
         })
         .catch((err) => res.status(400).json(err));
     } catch (e) {
-      res.status(400).json("Token is not valid");
+      Category.find()
+        .sort({ position: 1 })
+        .select("-position")
+        .then((categories) => res.json(categories))
+        .catch((err) => res.status(400).json(err));
     }
   }
 });
@@ -64,7 +68,11 @@ router.post("/addPoints", auth, (req, res) => {
         res.json(catUsr);
       })
       .catch(() => {
-        const catUsr = new CategoryUser({ userId, categoryId, points });
+        const catUsr = new CategoryUser({
+          userId,
+          categoryId,
+          points: points > 0 ? points : 0,
+        });
         catUsr.save();
         res.json(catUsr);
       });

@@ -42,7 +42,7 @@ export class Posts extends Component<propTypes> {
               ) : this.props.post.posts.length ? (
                 this.props.post.posts.map(
                   ({ _id, title, description, categoryIds, imageId }, i) => (
-                    <ListGroupItem>
+                    <ListGroupItem key={_id}>
                       <Media className="post mt-2">
                         <Media className="image-box">
                           <Link to={`/post/${_id}`}>

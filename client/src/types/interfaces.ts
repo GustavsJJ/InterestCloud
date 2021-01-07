@@ -51,6 +51,18 @@ export interface IImage {
   uploadDate: Date;
 }
 
+export interface IComment {
+  _id: string;
+  date: Date;
+  text: string;
+  postId: string;
+  authorId: {
+    _id: string;
+    name: string;
+    surname: string;
+  };
+}
+
 // Store/Actions/Reducers
 
 type actionKeys = keyof typeof actions;

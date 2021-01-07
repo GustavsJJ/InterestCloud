@@ -38,9 +38,9 @@ export class UserDropdown extends Component<propTypes> {
             {user ? user.name : localStorage.getItem("userName")}
           </DropdownToggle>
           <DropdownMenu className="bg-dark" style={{ width: "100%" }}>
-            <DropdownItem href="/user">Profile</DropdownItem>
-            <DropdownItem divider />
             <DropdownItem href="/user/history">History</DropdownItem>
+            <DropdownItem divider />
+            <DropdownItem href="/user">Profile</DropdownItem>
             <DropdownItem divider />
             <Logout />
           </DropdownMenu>

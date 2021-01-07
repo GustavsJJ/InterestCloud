@@ -29,6 +29,7 @@ mongoose
     app.use("/api/users", require("./routes/api/users"));
     app.use("/api/auth", require("./routes/api/auth"));
     app.use("/api/categories", require("./routes/api/categories"));
+    app.use("/api/comments", require("./routes/api/comments"));
 
     console.log("Connection to MongoDB established...");
 
