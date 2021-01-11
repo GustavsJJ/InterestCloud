@@ -38,7 +38,7 @@ function Footer() {
         Version:{" "}
         <a
           style={{ color: "#212529" }}
-          href="https://github.com/GustavsJJ/InterestCloud/releases/tag/v0.4"
+          href="https://github.com/GustavsJJ/InterestCloud/releases/tag/v1.0"
           target="_blank"
           rel="noreferrer"
         >
