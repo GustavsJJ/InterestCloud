@@ -42,7 +42,7 @@ function Footer() {
           target="_blank"
           rel="noreferrer"
         >
-          v0.4
+          v1.0
         </a>
       </p>
     </footer>
