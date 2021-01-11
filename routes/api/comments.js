@@ -18,6 +18,9 @@ router.get("/:postId", (req, res) => {
     .limit(25)
     .then((comments) => {
       res.json(comments);
+    })
+    .catch(() => {
+      res.json([]);
     });
 });
 
@@ -36,7 +39,7 @@ router.post("/:postId", auth, (req, res) => {
     return res.status(400).json("Comment must have at least one symbol");
   // if string lenght is above 250 characters
   if ([...comment].length > 250)
-    return res.status(400).json("Comment has too symbols");
+    return res.status(400).json("Comment has too many symbols");
 
   const newComment = new Comment({
     postId,

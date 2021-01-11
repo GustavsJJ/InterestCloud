@@ -1,11 +1,10 @@
-import { IAction } from "../../types/interfaces";
 import { GET_COMMENTS, ADD_COMMENT } from "../actions/types";
 
-const initialState = {
+const initialState: any = {
   comments: [],
 };
 
-export default function (state = initialState, action: IAction) {
+export default function (state = initialState, action: any) {
   switch (action.type) {
     case GET_COMMENTS:
       return {

@@ -1,4 +1,3 @@
-import { IAction } from "../../types/interfaces";
 import {
   GET_POSTS,
   POSTS_LOADING,
@@ -9,7 +8,7 @@ import {
   LIKE_POST,
 } from "../actions/types";
 
-const initialState = {
+const initialState: any = {
   posts: [],
   postsLoading: false,
   post: {
@@ -18,7 +17,7 @@ const initialState = {
   postLoading: false,
 };
 
-export default function (state = initialState, action: IAction) {
+export default function (state = initialState, action: any) {
   switch (action.type) {
     case GET_POSTS:
       return {

@@ -37,21 +37,20 @@ export class Categories extends Component<propTypes> {
             Category
           </DropdownToggle>
           <DropdownMenu className="bg-dark py-0" style={{ width: "100%" }}>
-            {this.props.categories.length
-              ? this.props.categories.map((category, i) => (
-                  <Fragment>
-                    <DropdownItem
-                      className="py-2"
-                      href={`/category/${category.name}`}
-                      style={{
-                        borderBottom: `3px solid var(--${category.color})`,
-                      }}
-                    >
-                      {category.name}
-                    </DropdownItem>
-                  </Fragment>
-                ))
-              : null}
+            {this.props.categories.length &&
+              this.props.categories.map((category) => (
+                <Fragment>
+                  <DropdownItem
+                    className="py-2"
+                    href={`/category/${category.name}`}
+                    style={{
+                      borderBottom: `3px solid var(--${category.color})`,
+                    }}
+                  >
+                    {category.name}
+                  </DropdownItem>
+                </Fragment>
+              ))}
           </DropdownMenu>
         </Dropdown>
       </NavItem>

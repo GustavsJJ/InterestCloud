@@ -20,7 +20,7 @@ import NewPost from "./components/NewPost";
 
 class App extends Component {
   componentDidMount() {
-    window.scrollTo(0, 0);
+    window && window.scrollTo(0, 0);
     store.dispatch(loadUser());
     store.dispatch(getCategories());
   }
@@ -74,7 +74,10 @@ class App extends Component {
                     </>
                   )}
                 />
-
+                <Route
+                  path="/oops"
+                  render={() => ErrorView("404", "Not Found")}
+                />
                 <Route render={() => ErrorView("404", "Not Found")} />
               </Switch>
             </div>

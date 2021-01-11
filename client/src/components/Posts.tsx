@@ -24,6 +24,7 @@ export class Posts extends Component<propTypes> {
     sortBy: "",
   };
 
+  // tries to get posts when component is rendered
   componentDidMount() {
     store.dispatch(getPosts(this.props.sortBy));
   }
@@ -31,80 +32,88 @@ export class Posts extends Component<propTypes> {
   render() {
     return (
       <Container>
-        {!this.props.post.postsLoading ? (
-          <Container fluid className="posts-container mb-5">
-            <ListGroup>
-              {!this.props.post.postsLoading &&
-              !this.props.post.posts.length ? (
-                <ListGroupItem className="py-5">
-                  <h2>No post found</h2>
-                </ListGroupItem>
-              ) : this.props.post.posts.length ? (
-                this.props.post.posts.map(
-                  ({ _id, title, description, categoryIds, imageId }, i) => (
-                    <ListGroupItem key={_id}>
-                      <Media className="post mt-2">
-                        <Media className="image-box">
-                          <Link to={`/post/${_id}`}>
-                            {imageId && (
-                              <Media
-                                object
-                                className="post-image mb-1"
-                                style={{ width: "300px", height: "300px" }}
-                                // src={`https://picsum.photos/300/300?random=${i}`}
-                                src={`/api/images/render/${imageId}`}
-                                alt="Generic placeholder image"
-                              />
-                            )}
-                          </Link>
-                        </Media>
-                        <Media body className="post-media-body">
-                          <Media heading>
-                            <Link to={`/post/${_id}`}>{title}</Link>
-                          </Media>
-                          <p
-                            style={{
-                              whiteSpace: "break-spaces",
-                            }}
-                          >
-                            {description.length > 900
-                              ? description.substring(0, 900) + "..."
-                              : description}
-                          </p>
-                        </Media>
-                      </Media>
-
-                      <div className="categories-floater pt-3 pr-3">
-                        <div />
-                        <div className="categories">
-                          {categoryIds.length
-                            ? categoryIds.map((categoryId) => {
-                                const category = this.props.categories.find(
-                                  (cat) => cat._id === categoryId
-                                );
-                                return (
-                                  <h3>
-                                    <Badge
-                                      color={category?.color}
-                                      href={`/category/${category?.name}`}
-                                    >
-                                      {category?.name}
-                                    </Badge>
-                                  </h3>
-                                );
-                              })
-                            : null}
-                        </div>
-                      </div>
+        {
+          // if posts are not loading
+          !this.props.post.postsLoading ? (
+            <Container fluid className="posts-container mb-5">
+              <ListGroup>
+                {
+                  // if posts are not loading and posts length is 0
+                  !this.props.post.posts.length ? (
+                    <ListGroupItem className="py-5">
+                      <h2>No post found</h2>
                     </ListGroupItem>
+                  ) : (
+                    // if posts are not loading and posts length is not 0 each post is being rendered
+                    this.props.post.posts.map(
+                      ({ _id, title, description, categoryIds, imageId }) => (
+                        <ListGroupItem key={_id}>
+                          <Media className="post mt-2">
+                            <Media className="image-box">
+                              <Link to={`/post/${_id}`}>
+                                {imageId && (
+                                  <Media
+                                    object
+                                    className="post-image mb-1"
+                                    style={{
+                                      maxWidth: "300px",
+                                      maxHeight: "300px",
+                                    }}
+                                    src={`/api/images/render/${imageId}`}
+                                    alt={`Image not found`}
+                                  />
+                                )}
+                              </Link>
+                            </Media>
+                            <Media body className="post-media-body">
+                              <Media heading>
+                                <Link to={`/post/${_id}`}>{title}</Link>
+                              </Media>
+                              <p
+                                style={{
+                                  whiteSpace: "break-spaces",
+                                }}
+                              >
+                                {description.length > 900
+                                  ? description.substring(0, 900) + "..."
+                                  : description}
+                              </p>
+                            </Media>
+                          </Media>
+
+                          <div className="categories-floater pt-3 pr-3">
+                            <div />
+                            <div className="categories">
+                              {categoryIds.length &&
+                                categoryIds.map((categoryId) => {
+                                  const category = this.props.categories.find(
+                                    (cat) => cat._id === categoryId
+                                  );
+                                  return (
+                                    <h3 key={categoryId}>
+                                      <Badge
+                                        color={category?.color}
+                                        href={`/category/${category?.name}`}
+                                      >
+                                        {category?.name}
+                                      </Badge>
+                                    </h3>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        </ListGroupItem>
+                      )
+                    )
                   )
-                )
-              ) : null}
-            </ListGroup>
-          </Container>
-        ) : (
-          <Loading />
-        )}
+                }
+              </ListGroup>
+            </Container>
+          ) : (
+            // if posts are loading then Loading component is being rendered
+            <Loading />
+          )
+        }
       </Container>
     );
   }

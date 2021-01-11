@@ -175,6 +175,7 @@ export class NewPost extends Component<propTypes> {
                       id="post-image-upload"
                       type="file"
                       // accept="image/*"
+                      style={{ overflow: "hidden" }}
                       onChange={this.onImageChange}
                     />
                     <FormText
@@ -241,7 +242,7 @@ export class NewPost extends Component<propTypes> {
                     </div>
                     <Button
                       type="submit"
-                      className="mt-3"
+                      className="mt-3 submit"
                       color="dark"
                       onClick={(e: any) => this.onSubmit(e)}
                       block

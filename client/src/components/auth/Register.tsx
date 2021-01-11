@@ -75,7 +75,11 @@ class Register extends Component<propTypes> {
 
     const { name, surname, email, password, confPassword } = this.state;
     const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/;
-    if (!email.match(emailRegex))
+
+    if (!name || !surname || !email || !password || !confPassword)
+      // checks if all fields are filled
+      this.setState({ msg: "Please enter all fields" });
+    else if (!email.match(emailRegex))
       // validates email
       this.setState({ msg: "Email is not valid" });
     else if (password !== confPassword)

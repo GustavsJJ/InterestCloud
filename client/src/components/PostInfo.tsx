@@ -122,8 +122,8 @@ export class PostInfo extends Component<propTypes> {
                       <Media
                         object
                         src={`/api/images/render/${imageId}`}
-                        alt="Generic placeholder image"
-                        style={{ width: "300px", height: "300px" }}
+                        style={{ maxWidth: "300px", maxHeight: "300px" }}
+                        alt={`Image not found`}
                       />
                     )}
                   </Media>

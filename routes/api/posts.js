@@ -38,7 +38,7 @@ router.get("/sortBy=:sortBy", (req, res) => {
   const token = req.header("x-auth-token");
   const userId = getUserIdFromToken(token).userId;
   switch (sortBy) {
-    case "user-viewedHistory":
+    case "user-viewedHistory": // sorts by user viewed history
       if (!userId) return res.status(userId.status).json(userId.msg);
       PostUser.find({ userId: userId })
         .sort({ viewedDate: -1 })
@@ -47,7 +47,7 @@ router.get("/sortBy=:sortBy", (req, res) => {
           return res.json(postUser.map((pu) => pu.postId));
         });
       break;
-    case "category-sort":
+    case "category-sort": // sorts by category
       const categoryName = req.params.sortBy.replace("cat-", "");
       Category.findOne({ name: categoryName }).then((category) => {
         const catId = category.id;
@@ -74,6 +74,7 @@ router.get("/", (req, res) => {
   if (!userId) {
     Post.find()
       .sort({ date: -1 })
+      .limit(25)
       .then((posts) => res.json(posts));
   } else {
     CategoryUser.find({ userId, points: { $gt: 0 } })
@@ -85,6 +86,8 @@ router.get("/", (req, res) => {
         PostUser.find({ userId }).then((pstUsrs) => {
           const seenPosts = pstUsrs.map((pu) => pu.postId); // posts that have been seen by the user
 
+          // gets posts that are not older than given period (2 weeks), adds field "views" and "seen"
+          // sorts posts by seen (where not seen posts are sorted first) and limits posts count by 25
           Post.aggregate([
             {
               $match: {
@@ -112,42 +115,62 @@ router.get("/", (req, res) => {
             { $sort: { seen: 1 } },
             { $limit: 25 },
           ]).then((posts) => {
-            const categoryOrder = catUsrs.map((c) => c.categoryId.toString());
+            // array of objects that contain categoryId and points for that specific category for all categories
+            // elements are sorted from highest point category to lowest
+            const highestPrioCat = catUsrs
+              .map((cat) => {
+                return { _id: cat.categoryId, points: cat.points };
+              })
+              .sort((x, y) => {
+                return x - y;
+              });
+
             // sorts posts by not seen, category, date and views
             const sorter = (a, b) => {
-              const setCategoryValues = (arr) => {
-                return arr.categoryIds
-                  .map((catId) => {
-                    if (categoryOrder.includes(catId.toString()))
-                      return (
-                        categoryOrder.length -
-                        categoryOrder.indexOf(catId.toString())
-                      );
-                    else return 0;
+              // takes array of category ids and returns array of objects that contain categoryId and points for that specific category
+              // elements are sorted from highest point category to lowest
+              const resolver = (arr) => {
+                const cats = arr.categoryIds
+                  .map((cat) => {
+                    const hpc = highestPrioCat.find(
+                      (c) => c._id == cat.toString()
+                    );
+                    return {
+                      id: cat,
+                      points: hpc ? hpc.points : 0,
+                    };
                   })
-                  .sort((c, d) => d - c);
+                  .sort((x, y) => {
+                    return y.points - x.points;
+                  });
+                return cats;
               };
-              const aPost = setCategoryValues(a);
-              const bPost = setCategoryValues(b);
+
+              const aPost = resolver(a); // post categories sorted by points
+              const bPost = resolver(b); // post categories sorted by points
+
               // first: sorts by unseen
               if (a.seen > b.seen) return 1;
               if (a.seen < b.seen) return -1;
               // secound: sorts by relevant categories
-              if (aPost[0] > bPost[0]) return -1;
-              if (aPost[0] < bPost[0]) return 1;
-              if (aPost[1] > bPost[1]) return -1;
-              if (aPost[1] < bPost[1]) return 1;
-              if (aPost[2] > bPost[2]) return -1;
-              if (aPost[2] < bPost[2]) return 1;
+              if (aPost[0].points > bPost[0].points) return -1;
+              if (aPost[0].points < bPost[0].points) return 1;
+              if (aPost[1] && bPost[1]) {
+                if (aPost[1].points > bPost[1].points) return -1;
+                if (aPost[1].points < bPost[1].points) return 1;
+                if (aPost[2] && bPost[2]) {
+                  if (aPost[2].points > bPost[2].points) return -1;
+                  if (aPost[2].points < bPost[2].points) return 1;
+                }
+              }
               // third: sorts by date
-              if (a.date.getDate() > b.date.getDate()) return 1;
-              if (a.date.getDate() < b.date.getDate()) return -1;
+              if (a.date > b.date) return -1;
+              if (a.date < b.date) return 1;
               // fourth: sorts by views
               if (a.views > b.views) return -1;
               if (a.views < b.views) return 1;
               return 0;
             };
-
             const sortedPosts = posts.sort(sorter);
             res.json(sortedPosts);
           });
@@ -214,17 +237,18 @@ router.delete("/:id", admin, (req, res) => {
           Post.findById(postId)
             .then((post) => {
               const imageId = post.imageId;
-              post.deleteOne();
-              if (imageId) {
-                images
-                  .deleteImage(imageId)
-                  .then((msg) => {
-                    return res.json({ success: true });
-                  })
-                  .catch(() => {
-                    res.status(500).json({ success: false });
-                  });
-              } else return res.json({ success: true });
+              post.deleteOne().then(() => {
+                if (imageId) {
+                  images
+                    .deleteImage(imageId)
+                    .then((msg) => {
+                      return res.json({ success: true });
+                    })
+                    .catch(() => {
+                      res.status(500).json({ success: false });
+                    });
+                } else return res.json({ success: true });
+              });
             })
             .catch((error) => res.status(404).json({ success: false }));
         })
@@ -316,11 +340,11 @@ router.get("/:id", (req, res) => {
                 newPostUser.save();
                 // add 1 point for each post category
                 addPointsToCategories(userId, postId, 1);
-                findPostAndSend(postId, res);
+                // findPostAndSend(postId, res);
               }
               return res.json({
                 ...post._doc,
-                liked: postUser.likedDate ? true : false,
+                liked: postUser ? (postUser.likedDate ? true : false) : false,
               });
             }
           );
@@ -329,17 +353,19 @@ router.get("/:id", (req, res) => {
           return res.json("Post cannot be found");
         });
     } catch (e) {
-      findPostAndSend(postId, res);
+      return findPostAndSend(postId, res);
     }
-  } else findPostAndSend(postId, res);
+  } else return findPostAndSend(postId, res);
 });
 
+// finds post by id and sends it back
 const findPostAndSend = (postId, res) => {
   Post.findById(postId)
     .then((post) => res.json(post))
-    .catch((e) => res.json({}));
+    .catch((e) => res.status(404).json("Post not found"));
 };
 
+// adds points to all categories from post
 const addPointsToCategories = (userId, postId, points) => {
   Post.findById(postId).then((post) => {
     const categoryIds = post.categoryIds;

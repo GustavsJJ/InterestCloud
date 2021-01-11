@@ -7,7 +7,6 @@ import {
   POST_LOADING,
   LIKE_POST,
 } from "./types";
-import { returnErrors } from "./errorActions";
 import { getHeaderConfig } from "./authActions";
 
 interface createPostProps {
@@ -31,7 +30,7 @@ export const getPosts = (sortBy?: string) => (
         dispatch({ type: GET_POSTS, payload: res.data });
       })
       .catch((err: any) => {
-        dispatch(returnErrors(err.response.data, err.response.status));
+        console.error(err.response?.data, err.response?.status);
       });
   } else {
     axios
@@ -40,7 +39,7 @@ export const getPosts = (sortBy?: string) => (
         dispatch({ type: GET_POSTS, payload: res.data });
       })
       .catch((err: any) => {
-        dispatch(returnErrors(err.response.data, err.response.status));
+        console.error(err.response?.data, err.response?.status);
       });
   }
 };
@@ -61,7 +60,7 @@ export const getPostById = (id: string) => (
       dispatch({ type: GET_POST, payload: res.data });
     })
     .catch((err: any) => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      window.location.href = "/oops";
     });
 };
 

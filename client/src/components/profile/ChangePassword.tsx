@@ -76,15 +76,20 @@ export class ChangePassword extends Component<propTypes> {
     this.onCloseAlert();
     const { oldPsw, newPsw, newPswConf } = this.state;
 
+    // checks for all fields
+    if (!oldPsw || !newPsw || !newPswConf)
+      return this.onOpenAlert("Please enter all fields", true);
+
+    // checks if old password is the same as the new
     if (oldPsw === newPsw)
       return this.onOpenAlert(
         "New password cannot be the same as the old password",
         true
       );
 
+    // checks if new passwords match
     if (newPsw !== newPswConf)
       return this.onOpenAlert("Passwords do not match", true);
-
     this.props.changePassword(oldPsw, newPsw, this.onOpenAlert);
   };
 

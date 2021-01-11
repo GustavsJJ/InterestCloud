@@ -64,6 +64,10 @@ class Login extends Component<propTypes> {
     e.preventDefault();
     const { email, password } = this.state;
 
+    if (!email || !password)
+      // checks if all fields are filled
+      this.setState({ msg: "Please enter all fields" });
+
     const user = {
       email,
       password,
