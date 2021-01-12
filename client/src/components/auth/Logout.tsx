@@ -8,6 +8,7 @@ interface propTypes {
 }
 
 export class Logout extends Component<propTypes> {
+  // logs out user
   onLogout = () => {
     this.props.logout();
   };

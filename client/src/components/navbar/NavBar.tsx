@@ -26,12 +26,13 @@ class NavBar extends Component<propTypes> {
     isOpen: false,
   };
 
+  // toggles dropdown
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
   render() {
-    const { isAuthenticated, isLoading, user } = this.props.auth;
+    const { isAuthenticated, user } = this.props.auth;
     const leftItems = (
       <>
         <NavLink href="/">Home</NavLink>
@@ -42,18 +43,22 @@ class NavBar extends Component<propTypes> {
       </>
     );
 
+    // authenticated user links
     const member = (
       <>
-        {(user?.role === "admin" || user?.role === "reporter") && (
-          <NavLink
-            active
-            className="ml-2 newPost-button"
-            style={{ color: "var(--info)" }}
-            href="/newPost"
-          >
-            <b>New Post +</b>
-          </NavLink>
-        )}
+        {
+          // adds "New Post +" button if user is admin or reporter
+          (user?.role === "admin" || user?.role === "reporter") && (
+            <NavLink
+              active
+              className="ml-2 newPost-button"
+              style={{ color: "var(--info)" }}
+              href="/newPost"
+            >
+              <b>New Post +</b>
+            </NavLink>
+          )
+        }
 
         <NavItem>
           <UserDropdown />
@@ -61,6 +66,7 @@ class NavBar extends Component<propTypes> {
       </>
     );
 
+    // unauthenticated user links
     const unregistered = (
       <>
         <NavItem>

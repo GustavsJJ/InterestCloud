@@ -109,134 +109,149 @@ export class Profile extends Component<propTypes> {
 
     return (
       <Container className="post-container mt-5">
-        {!isLoading && !isAuthenticated ? (
-          ErrorView("401", "Unauthorized")
-        ) : this.props.auth.isLoading ? (
-          <Loading />
-        ) : (
-          <div>
-            <Jumbotron style={{ backgroundColor: "white" }}>
-              <Media className="post">
-                <Media body style={{ fontSize: "1rem" }}>
-                  <Media heading>Profile</Media>
-                  <hr />
-
-                  <div>
-                    <div
-                      className="profileGeneralInfo d-flex flex-wrap"
-                      style={{ justifyContent: "start" }}
-                    >
-                      <div>
-                        <h6>Name: </h6>
-                        <p>{user.name ? user.name : "undefined"}</p>
-                      </div>
-                      <div>
-                        <h6>Surname: </h6>
-                        <p>{user.surname ? user.surname : "undefined"}</p>
-                      </div>
-                      <div>
-                        <h6>Email: </h6>
-                        <p>{user.email ? user.email : "undefined"}</p>
-                      </div>
-                    </div>
-
-                    <div className="interestProgressBar">
-                      <h6>Interest: </h6>
-                      <Progress multi className="profileInterestBar">
-                        {categories.map((category) => {
-                          const points = category.points
-                            ? (category.points / this.state.maxPoints) * 100
-                            : 0;
-                          return (
-                            <Progress bar color={category.color} value={points}>
-                              {points > 10 && `${points.toFixed(0)}%`}
-                            </Progress>
-                          );
-                        })}
-                      </Progress>
-                    </div>
-                    <hr />
-                    <div className="interestEditor mt-3">
-                      <h6 className="mr-3">Add interest:</h6>
-                      <div>
-                        {categories.map((category) => (
-                          <Button
-                            color={category.color}
-                            onClick={() => this.onAddPoints(category._id)}
-                          >
-                            {`${category.name} +`}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="interestEditor mt-3">
-                      <h6 className="mr-3">Remove interest:</h6>
-                      <div>
-                        {categories.map((category) => (
-                          <Button
-                            color={category.color}
-                            onClick={() => this.onRemovePoints(category._id)}
-                          >
-                            {`${category.name} -`}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
+        {
+          // if user is not being loaded and user is not authenticated
+          !isLoading && !isAuthenticated ? (
+            ErrorView("401", "Unauthorized")
+          ) : // if user is being loaded
+          isLoading ? (
+            <Loading />
+          ) : (
+            // if user is not being loaded and user is authenticated
+            <div>
+              <Jumbotron style={{ backgroundColor: "white" }}>
+                <Media className="post">
+                  <Media body style={{ fontSize: "1rem" }}>
+                    <Media heading>Profile</Media>
                     <hr />
 
-                    <div className="bottomButtons">
-                      <ButtonGroup style={{ width: "100%" }}>
-                        <EditProfile />
-                        <ChangePassword />
-                      </ButtonGroup>
+                    <div>
+                      <div
+                        className="profileGeneralInfo d-flex flex-wrap"
+                        style={{ justifyContent: "start" }}
+                      >
+                        <div>
+                          <h6>Name: </h6>
+                          <p>{user.name ? user.name : "undefined"}</p>
+                        </div>
+                        <div>
+                          <h6>Surname: </h6>
+                          <p>{user.surname ? user.surname : "undefined"}</p>
+                        </div>
+                        <div>
+                          <h6>Email: </h6>
+                          <p>{user.email ? user.email : "undefined"}</p>
+                        </div>
+                      </div>
 
-                      <Button
-                        color="dark"
-                        style={{ marginTop: "20px" }}
-                        block
-                        outline
-                        onClick={this.resetModal}
-                      >
-                        Reset Interest
-                      </Button>
-                      <Button
-                        color="danger"
-                        style={{ marginTop: "20px" }}
-                        block
-                        onClick={this.deleteModal}
-                      >
-                        Delete Profile
-                      </Button>
-                      <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                        <ModalHeader toggle={this.toggle} />
-                        <ModalBody style={{ textAlign: "center" }}>
-                          {this.state.modalText}
-                        </ModalBody>
+                      <div className="interestProgressBar">
+                        <h6>Interest: </h6>
+                        <Progress multi className="profileInterestBar">
+                          {
+                            // render category interest bar
+                            categories.map((category) => {
+                              const points = category.points
+                                ? (category.points / this.state.maxPoints) * 100
+                                : 0;
+                              return (
+                                <Progress
+                                  bar
+                                  color={category.color}
+                                  value={points}
+                                >
+                                  {points > 10 && `${points.toFixed(0)}%`}
+                                </Progress>
+                              );
+                            })
+                          }
+                        </Progress>
+                      </div>
+                      <hr />
+                      <div className="interestEditor mt-3">
+                        <h6 className="mr-3">Add interest:</h6>
+                        <div>
+                          {categories.map((category) => (
+                            // for each category render "category +" button
+                            <Button
+                              color={category.color}
+                              onClick={() => this.onAddPoints(category._id)}
+                            >
+                              {`${category.name} +`}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="interestEditor mt-3">
+                        <h6 className="mr-3">Remove interest:</h6>
+                        <div>
+                          {categories.map((category) => (
+                            // for each category render "category -" button
+                            <Button
+                              color={category.color}
+                              onClick={() => this.onRemovePoints(category._id)}
+                            >
+                              {`${category.name} -`}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <hr />
+                      {/* renders "Edit Profile", "ChangePassword", "Reset Interest" and "Delete Profile" buttons */}
+                      <div className="bottomButtons">
+                        <ButtonGroup style={{ width: "100%" }}>
+                          <EditProfile />
+                          <ChangePassword />
+                        </ButtonGroup>
+
                         <Button
-                          className="mx-3 mt-2"
-                          color="danger"
-                          onClick={this.state.modalActionFunction}
-                        >
-                          {this.state.modalActionText}
-                        </Button>
-                        <Button
-                          className="mx-3 my-3"
-                          color="primary"
+                          color="dark"
+                          style={{ marginTop: "20px" }}
+                          block
                           outline
-                          onClick={this.toggle}
+                          onClick={this.resetModal}
                         >
-                          Cancel
+                          Reset Interest
                         </Button>
-                      </Modal>
+                        <Button
+                          color="danger"
+                          style={{ marginTop: "20px" }}
+                          block
+                          onClick={this.deleteModal}
+                        >
+                          Delete Profile
+                        </Button>
+                        {/* confirmation button */}
+                        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                          <ModalHeader toggle={this.toggle} />
+                          <ModalBody style={{ textAlign: "center" }}>
+                            {this.state.modalText}
+                          </ModalBody>
+                          <Button
+                            className="mx-3 mt-2"
+                            color="danger"
+                            onClick={this.state.modalActionFunction}
+                          >
+                            {this.state.modalActionText}
+                          </Button>
+                          <Button
+                            className="mx-3 my-3"
+                            color="primary"
+                            outline
+                            onClick={this.toggle}
+                          >
+                            Cancel
+                          </Button>
+                        </Modal>
+                      </div>
                     </div>
-                  </div>
+                  </Media>
                 </Media>
-              </Media>
-            </Jumbotron>
-          </div>
-        )}
+              </Jumbotron>
+            </div>
+          )
+        }
       </Container>
     );
   }

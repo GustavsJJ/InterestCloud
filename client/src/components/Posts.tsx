@@ -56,8 +56,8 @@ export class Posts extends Component<propTypes> {
                                     object
                                     className="post-image mb-1"
                                     style={{
-                                      maxWidth: "300px",
-                                      maxHeight: "300px",
+                                      width: "300px",
+                                      height: "300px",
                                     }}
                                     src={`/api/images/render/${imageId}`}
                                     alt={`Image not found`}

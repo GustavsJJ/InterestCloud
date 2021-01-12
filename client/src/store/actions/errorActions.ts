@@ -1,6 +1,6 @@
 import { GET_ERRORS, CLEAR_ERRORS } from "./types";
 
-// RETURN ERRORS
+// returns errors
 export const returnErrors = (
   msg: String | null | undefined,
   status: Number | null | undefined,
@@ -12,7 +12,7 @@ export const returnErrors = (
   };
 };
 
-// CLEAR ERRORS
+// clear errors
 export const clearErrors = () => {
   return {
     type: CLEAR_ERRORS,

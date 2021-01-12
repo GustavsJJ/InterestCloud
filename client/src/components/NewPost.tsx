@@ -59,6 +59,7 @@ export class NewPost extends Component<propTypes> {
     this.onChangeCategory = this.onChangeCategory.bind(this);
   }
 
+  // saves all categories once thay are fetched
   componentDidUpdate(prevProps: propTypes) {
     if (prevProps.categories !== this.props.categories) {
       if (this.props.categories.length) {
@@ -71,6 +72,7 @@ export class NewPost extends Component<propTypes> {
     }
   }
 
+  // creates a post
   onSubmit = (e: any) => {
     e.preventDefault();
     if (!this.state.isLoading) {
@@ -91,6 +93,7 @@ export class NewPost extends Component<propTypes> {
     }
   };
 
+  // clears all fields
   onSubmitSuccess = (msg: string) => {
     this.setState({
       alertColor: "success",
@@ -103,10 +106,9 @@ export class NewPost extends Component<propTypes> {
       file: new File([""], ""),
       isLoading: false,
     });
-    (document.getElementById("post-image-upload") as HTMLInputElement).value =
-      "";
   };
 
+  // returns error message
   onSubmitError = (err: string) => {
     this.setState({
       alertColor: "danger",
@@ -116,6 +118,7 @@ export class NewPost extends Component<propTypes> {
     });
   };
 
+  // changes file input value
   onImageChange(e: any) {
     if (e.target.files.length) {
       const file = new File([e.target.files[0]], e.target.files[0].name, {
@@ -127,10 +130,12 @@ export class NewPost extends Component<propTypes> {
     }
   }
 
+  // changes text input value
   onChange(e: any) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  // changes category input value
   onChangeCategory(e: any) {
     this.setState({
       categories: {
@@ -140,6 +145,7 @@ export class NewPost extends Component<propTypes> {
     });
   }
 
+  // closes alert
   onCloseAlert = () => {
     this.setState({ alertVisibility: false });
   };
@@ -149,112 +155,119 @@ export class NewPost extends Component<propTypes> {
 
     return (
       <Container className="post-container mt-5">
-        {!isLoading && !isAuthenticated ? (
-          ErrorView("401", "Unauthorized")
-        ) : this.props.auth.isLoading ? (
-          <Loading />
-        ) : (
-          <div>
-            <Jumbotron style={{ backgroundColor: "white" }}>
-              <Media className="post">
-                <Media body style={{ fontSize: "1rem" }}>
-                  <Media className="d-flex" heading>
-                    New Post
+        {
+          // if user is not being loaded and user is not authenticated
+          !isLoading && !isAuthenticated ? (
+            ErrorView("401", "Unauthorized")
+          ) : // if user is being loaded
+          this.props.auth.isLoading ? (
+            <Loading />
+          ) : (
+            // if user is not being loaded and user is authenticated
+            <div>
+              <Jumbotron style={{ backgroundColor: "white" }}>
+                <Media className="post">
+                  <Media body style={{ fontSize: "1rem" }}>
+                    <Media className="d-flex" heading>
+                      New Post
+                    </Media>
+                    <hr />
+                    <Form name="image" encType="multipart/form-data">
+                      <Alert
+                        color={this.state.alertColor}
+                        isOpen={this.state.alertVisibility}
+                        toggle={this.onCloseAlert}
+                      >
+                        {this.state.alertMsg}
+                      </Alert>
+                      <Label for="exampleFile">Image</Label>
+                      <Input
+                        id="post-image-upload"
+                        type="file"
+                        // accept="image/*"
+                        style={{ overflow: "hidden" }}
+                        onChange={this.onImageChange}
+                      />
+                      <FormText
+                        color="muted"
+                        style={{ whiteSpace: "break-spaces" }}
+                      >
+                        {
+                          'File should be 1MB ".jpeg" or ".png" image file\nRecomended size: 300x300 px'
+                        }
+                      </FormText>
+                    </Form>
+                    <Form onSubmit={this.onSubmit}>
+                      <Label className="mt-1">Title</Label>
+                      <Input
+                        name="title"
+                        value={this.state.title}
+                        type="text"
+                        onChange={this.onChange}
+                      />
+                      <FormText color="muted">
+                        Title cannot contain more than 50 symbols
+                      </FormText>
+                      <Label className="mt-1">Text</Label>
+                      <Input
+                        style={{
+                          minHeight: "90px",
+                          justifyContent: "flex-start",
+                          wordBreak: "break-word",
+                        }}
+                        name="text"
+                        value={this.state.text}
+                        type="textarea"
+                        onChange={this.onChange}
+                      />
+                      <FormText color="muted">
+                        Text cannot contain more than 2000 symbols
+                      </FormText>
+                      <Label className="mt-1">Categories</Label>
+                      <FormGroup className="mb-0 pl-1">
+                        {this.props.categories.map((category) => (
+                          <Label className="mx-3 mb-0">
+                            <Input
+                              checked={this.state.categories[category._id]}
+                              name={category._id}
+                              type="checkbox"
+                              onChange={(e: any) => this.onChangeCategory(e)}
+                            />
+                            {category.name}
+                          </Label>
+                        ))}
+                      </FormGroup>
+                      <FormText color="muted">
+                        Post must have one to three categories.
+                      </FormText>
+                      <div
+                        className="mt-3"
+                        style={{
+                          textAlign: "center",
+                          alignItems: "center",
+                          visibility: this.state.isLoading
+                            ? "visible"
+                            : "hidden",
+                        }}
+                      >
+                        <Spinner />
+                      </div>
+                      <Button
+                        type="submit"
+                        className="mt-3 submit"
+                        color="dark"
+                        onClick={(e: any) => this.onSubmit(e)}
+                        block
+                      >
+                        Create a Post
+                      </Button>
+                    </Form>
                   </Media>
-                  <hr />
-                  <Form name="image" encType="multipart/form-data">
-                    <Alert
-                      color={this.state.alertColor}
-                      isOpen={this.state.alertVisibility}
-                      toggle={this.onCloseAlert}
-                    >
-                      {this.state.alertMsg}
-                    </Alert>
-                    <Label for="exampleFile">Image</Label>
-                    <Input
-                      id="post-image-upload"
-                      type="file"
-                      // accept="image/*"
-                      style={{ overflow: "hidden" }}
-                      onChange={this.onImageChange}
-                    />
-                    <FormText
-                      color="muted"
-                      style={{ whiteSpace: "break-spaces" }}
-                    >
-                      {
-                        'File should be 1MB ".jpeg" or ".png" image file\nRecomended size: 300x300 px'
-                      }
-                    </FormText>
-                  </Form>
-                  <Form onSubmit={this.onSubmit}>
-                    <Label className="mt-1">Title</Label>
-                    <Input
-                      name="title"
-                      value={this.state.title}
-                      type="text"
-                      onChange={this.onChange}
-                    />
-                    <FormText color="muted">
-                      Title cannot contain more than 50 symbols
-                    </FormText>
-                    <Label className="mt-1">Text</Label>
-                    <Input
-                      style={{
-                        minHeight: "90px",
-                        justifyContent: "flex-start",
-                        wordBreak: "break-word",
-                      }}
-                      name="text"
-                      value={this.state.text}
-                      type="textarea"
-                      onChange={this.onChange}
-                    />
-                    <FormText color="muted">
-                      Text cannot contain more than 2000 symbols
-                    </FormText>
-                    <Label className="mt-1">Categories</Label>
-                    <FormGroup className="mb-0 pl-1">
-                      {this.props.categories.map((category) => (
-                        <Label className="mx-3 mb-0">
-                          <Input
-                            checked={this.state.categories[category._id]}
-                            name={category._id}
-                            type="checkbox"
-                            onChange={(e: any) => this.onChangeCategory(e)}
-                          />
-                          {category.name}
-                        </Label>
-                      ))}
-                    </FormGroup>
-                    <FormText color="muted">
-                      Post must have one to three categories.
-                    </FormText>
-                    <div
-                      className="mt-3"
-                      style={{
-                        textAlign: "center",
-                        alignItems: "center",
-                        visibility: this.state.isLoading ? "visible" : "hidden",
-                      }}
-                    >
-                      <Spinner />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="mt-3 submit"
-                      color="dark"
-                      onClick={(e: any) => this.onSubmit(e)}
-                      block
-                    >
-                      Create a Post
-                    </Button>
-                  </Form>
                 </Media>
-              </Media>
-            </Jumbotron>
-          </div>
-        )}
+              </Jumbotron>
+            </div>
+          )
+        }
       </Container>
     );
   }

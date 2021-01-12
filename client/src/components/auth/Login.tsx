@@ -30,6 +30,7 @@ class Login extends Component<propTypes> {
     msg: null,
   };
 
+  // returns error if login was not successful or closes modal if login was successful
   componentDidUpdate(prevProps: propTypes) {
     const { error, isAuthenticated } = this.props;
     if (error !== prevProps.error) {
@@ -45,6 +46,7 @@ class Login extends Component<propTypes> {
     }
   }
 
+  // toggles login modal
   toggle = () => {
     this.setState({
       modal: !this.state.modal,
@@ -52,14 +54,17 @@ class Login extends Component<propTypes> {
     this.props.clearErrors();
   };
 
+  // changes input value
   onChange = (e: any) => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  // if Enter is pressed onSubmit is called
   onKeyDown = (e: any) => {
     if (e.key === "Enter") this.onSubmit(e);
   };
 
+  // tries to login user
   onSubmit = (e: any) => {
     e.preventDefault();
     const { email, password } = this.state;

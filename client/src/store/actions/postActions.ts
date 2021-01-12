@@ -17,6 +17,8 @@ interface createPostProps {
   file: any;
 }
 
+// gets posts depending on user and sortBy parameter
+// optionally sortBy parameter is used to sort posts by a specific feature
 export const getPosts = (sortBy?: string) => (
   dispatch: Function,
   getState: Function
@@ -44,6 +46,7 @@ export const getPosts = (sortBy?: string) => (
   }
 };
 
+// gets post by id
 export const getPostById = (id: string) => (
   dispatch: Function,
   getState: Function
@@ -64,6 +67,7 @@ export const getPostById = (id: string) => (
     });
 };
 
+// creates a post
 export const createPost = (
   { title, text, imageId, categories, file }: createPostProps,
   onError: Function,
@@ -71,7 +75,7 @@ export const createPost = (
 ) => (dispatch: Function, getState: Function) => {
   const config = getHeaderConfig(getState());
   const body = JSON.stringify({ title, text, imageId, categories });
-  // post creation
+  // post info creation
   axios
     .post("/api/posts", body, config)
     .then((res) => {
@@ -111,6 +115,7 @@ export const createPost = (
     });
 };
 
+// likes a post
 export const likePost = (id: string) => (
   dispatch: Function,
   getState: Function
@@ -126,6 +131,7 @@ export const likePost = (id: string) => (
     });
 };
 
+// deletes a post
 export const deletePost = (id: string) => (
   dispatch: Function,
   getState: Function

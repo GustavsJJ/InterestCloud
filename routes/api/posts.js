@@ -324,8 +324,8 @@ router.get("/:id", (req, res) => {
       Post.findById(postId)
         .then((post) => {
           // Set Post as viewed
-          PostUser.findOne({ userId: userId, postId: postId }).then(
-            (postUser) => {
+          PostUser.findOne({ userId: userId, postId: postId })
+            .then((postUser) => {
               if (postUser) {
                 // if postUser record can be found
                 postUser.viewedDate = Date.now();
@@ -346,8 +346,10 @@ router.get("/:id", (req, res) => {
                 ...post._doc,
                 liked: postUser ? (postUser.likedDate ? true : false) : false,
               });
-            }
-          );
+            })
+            .catch((e) => {
+              return res.json("Post cannot be found");
+            });
         })
         .catch((e) => {
           return res.json("Post cannot be found");

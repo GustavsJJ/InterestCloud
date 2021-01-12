@@ -19,6 +19,8 @@ export class UserDropdown extends Component<propTypes> {
   state = {
     isOpen: false,
   };
+
+  // toggles dropdown
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };

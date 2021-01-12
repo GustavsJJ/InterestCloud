@@ -20,6 +20,7 @@ export class Categories extends Component<propTypes> {
     isOpen: false,
   };
 
+  // toggles dropdown
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
