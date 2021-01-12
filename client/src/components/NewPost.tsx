@@ -151,7 +151,7 @@ export class NewPost extends Component<propTypes> {
   };
 
   render() {
-    const { user, isAuthenticated, isLoading } = this.props.auth;
+    const { isAuthenticated, isLoading } = this.props.auth;
 
     return (
       <Container className="post-container mt-5">
