@@ -1,4 +1,0 @@
-{
-    "mongoURI": "mongodb+srv://GustavsJJ:hWnybkmOTqd1mBvZ@initialcluster.desnw.mongodb.net/Main?retryWrites=true&w=majority",
-    "jwtSecret": "MY!LittlE@SecreT#TokeN$StrinG"
-}
