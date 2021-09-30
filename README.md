@@ -1,5 +1,7 @@
 # InterestCloud
 
+### !!! `Project no longer supported`
+
 #### "A news portal that finds the best news for you"
 
 **InterestCloud** is a **full-stack** news portal web application that is following **MERN stack:**
@@ -11,7 +13,7 @@
 
  ... architectural pattern.
  
-  **Deployed version: [http://www.gustavsjj.id.lv](http://www.gustavsjj.id.lv)**
+  <strike>**Deployed version: [http://www.gustavsjj.id.lv](http://www.gustavsjj.id.lv)**</strike>
  > Note: deployed version could be some versions behind main branch version.
  
  ## MongoDB and JWT configutarion
